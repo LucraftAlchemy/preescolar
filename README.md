@@ -2,6 +2,8 @@
 
 Juegos y actividades de preescolar para proyectar en el salón. Sitio estático (sin compilación y sin servidor) publicado con Cloudflare Pages.
 
+En línea: https://preescolar.lucraft.com.mx
+
 - `public/index.html`: portada con una tarjeta por actividad.
 - `public/<actividad>/index.html`: cada juego o actividad, autocontenido.
 
