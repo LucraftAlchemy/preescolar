@@ -69,12 +69,29 @@ body { background: var(--bg); color: var(--tinta); font-family: var(--f); font-w
 .pie { margin-top: 44px; text-align: center; color: var(--suave); font-size: 17px; }
 .pie p { margin: 0; }
 @media (prefers-reduced-motion: reduce) { .jugar { transition: none; } }
+
+/* Arcoíris */
+body { background: linear-gradient(160deg, #FFE1E6 0%, #FFEBD2 18%, #FFF7C7 36%, #DDF7DA 54%, #D7EEFF 72%, #E9DDFF 100%); }
+.cab h1 { border-color: transparent; background: linear-gradient(#fff, #fff) padding-box, linear-gradient(90deg, #FF5E7A, #FF9F43, #F9D423, #4CD07D, #3FA9F5, #9B6BFF) border-box; box-shadow: 0 8px 0 rgba(155, 107, 255, .25); }
+.a0 { color: #FF8A00; } .a1 { color: #E6B800; } .a2 { color: #2EB872; } .a3 { color: #2D9CDB; } .a4 { color: #7B61FF; } .a5 { color: #E040A0; }
+.arcoiris { display: block; width: min(260px, 60vw); height: auto; margin: 0 auto -6px; }
+.act { border-width: 6px; }
+.act:nth-child(6n+2) { border-color: #FF8FA3; box-shadow: 0 7px 0 #FFC9D3; } .act:nth-child(6n+2) .jugar { background: #FFB3C1; }
+.act:nth-child(6n+3) { border-color: #6EC6FF; box-shadow: 0 7px 0 #BFE5FF; } .act:nth-child(6n+3) .jugar { background: #9ED8FF; }
+.act:nth-child(6n+4) { border-color: #5DD39E; box-shadow: 0 7px 0 #BDEFD6; } .act:nth-child(6n+4) .jugar { background: #9BE8C3; }
+.act:nth-child(6n+5) { border-color: #FFB347; box-shadow: 0 7px 0 #FFDDB0; } .act:nth-child(6n+5) .jugar { background: #FFCB80; }
+.act:nth-child(6n+6) { border-color: #B28DFF; box-shadow: 0 7px 0 #DCCBFF; } .act:nth-child(6n+6) .jugar { background: #CDB4FF; }
+.act:nth-child(6n+7) { border-color: #F9D423; box-shadow: 0 7px 0 #FDEB9C; }
+.act:nth-child(6n+2) .etiquetas li { background: #FFE4EA; color: #C2185B; }
+.act:nth-child(6n+3) .etiquetas li { background: #E0F2FF; color: #1565C0; }
+.act .dibujo { background: rgba(255, 255, 255, .7); }
 </style>
 </head>
 <body>
 <div class="envoltura">
   <header class="cab">
-    <h1><span class="q">P</span>reescolar</h1>
+    <svg class="arcoiris" viewBox="0 -40 260 120" aria-hidden="true"><path d="M20 78 A110 110 0 0 1 240 78" fill="none" stroke="#FF5E7A" stroke-width="9"/><path d="M29 78 A101 101 0 0 1 231 78" fill="none" stroke="#FF9F43" stroke-width="9"/><path d="M38 78 A92 92 0 0 1 222 78" fill="none" stroke="#F9D423" stroke-width="9"/><path d="M47 78 A83 83 0 0 1 213 78" fill="none" stroke="#4CD07D" stroke-width="9"/><path d="M56 78 A74 74 0 0 1 204 78" fill="none" stroke="#3FA9F5" stroke-width="9"/><path d="M65 78 A65 65 0 0 1 195 78" fill="none" stroke="#9B6BFF" stroke-width="9"/></svg>
+    <h1><span class="q">P</span><span class="a0">r</span><span class="a1">e</span><span class="a2">e</span><span class="a3">s</span><span class="a4">c</span><span class="a5">o</span><span class="a0">l</span><span class="a1">a</span><span class="a2">r</span></h1>
     <p>Juegos y actividades para proyectar en el salón.</p>
   </header>
 

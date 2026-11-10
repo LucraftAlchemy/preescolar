@@ -322,6 +322,19 @@ tr.fila-tarde td { background: #FFF4F4; }
 .aviso-tarde { position: absolute; top: 7px; left: 8px; font-family: var(--f-text); font-size: 12px; font-weight: 700; line-height: 1.2; color: #B3261E; background: #FDE2E3; border-radius: 999px; padding: 2px 8px; }
 #v-registro table { min-width: 860px; }
 @media (max-width: 560px) { .ficha .renglon { grid-template-columns: minmax(0, 92px) minmax(0, 1fr); } .ficha .renglon > span { font-size: 11px; } .ficha .renglon b { font-size: 18px; } }
+
+/* Arcoíris */
+:root, :root:not([data-theme="light"]), :root[data-theme="dark"] { --c0: #FF8FA3; --c1: #FFB347; --c2: #F9D423; --c3: #5DD39E; --c4: #6EC6FF; --c5: #8C9EFF; --c6: #C792EA; --purple: #CDB4FF; }
+@media (prefers-color-scheme: dark) { :root, :root:not([data-theme="light"]), :root[data-theme="dark"] { --c0: #FF8FA3; --c1: #FFB347; --c2: #F9D423; --c3: #5DD39E; --c4: #6EC6FF; --c5: #8C9EFF; --c6: #C792EA; --purple: #CDB4FF; } }
+html { min-height: 100%; background: linear-gradient(160deg, #FFE1E6 0%, #FFEBD2 18%, #FFF7C7 36%, #DDF7DA 54%, #D7EEFF 72%, #E9DDFF 100%) fixed; }
+body { min-height: 100vh; background: transparent; }
+.top::after { background: linear-gradient(90deg, #FF5E7A, #FF9F43, #F9D423, #4CD07D, #3FA9F5, #9B6BFF) top / 100% 14px no-repeat, linear-gradient(var(--wood-dark), var(--wood-dark)) bottom / 100% 6px no-repeat; height: 20px; }
+.tab:nth-child(1)[aria-selected="true"] { background: #FFB3C1; border-color: #FF8FA3; }
+.tab:nth-child(2)[aria-selected="true"] { background: #9ED8FF; border-color: #6EC6FF; }
+.tab:nth-child(3)[aria-selected="true"] { background: #9BE8C3; border-color: #5DD39E; }
+.tab:nth-child(4)[aria-selected="true"] { background: #FFCB80; border-color: #FFB347; }
+.nombre { background: #FFFFFF; }
+.nombre.con-libro { background: #FFF8E1; }
 </style>
 </head>
 <body>
