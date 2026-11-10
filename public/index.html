@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preescolar · Juegos para proyectar</title>
+<meta name="description" content="Juegos y actividades de preescolar para proyectar en el salón.">
+<meta name="theme-color" content="#F4F0FF">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23B79CF0'/%3E%3Ctext x='32' y='45' font-size='36' text-anchor='middle' font-family='Arial' font-weight='700' fill='%23E1262D'%3EP%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mali:wght@600;700&display=swap">
+<style>
+/* Mismo look que los juegos: fondo lila claro, tarjetas blancas con borde lila y la mayúscula en rojo.
+   Una sola versión clara, pensada para el proyector. */
+:root {
+  --bg: #F4F0FF;
+  --tarjeta: #FFFFFF;
+  --tinta: #2E2350;
+  --suave: #574A7C;
+  --lila: #B79CF0;
+  --lila-osc: #6B45C6;
+  --lila-claro: #F0E9FF;
+  --rojo: #E1262D;
+  --sol: #FFC93C;
+  --sombra: 0 6px 0 #DCD0FA;
+  --f: "Mali", "Comic Sans MS", "Chalkboard SE", system-ui, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--tinta); font-family: var(--f); font-weight: 600; line-height: 1.4; min-height: 100vh; }
+:focus-visible { outline: 4px solid var(--lila-osc); outline-offset: 4px; border-radius: 14px; }
+.envoltura { width: min(100% - 32px, 1100px); margin-inline: auto; padding-block: clamp(22px, 5vh, 56px) 40px; }
+
+.cab { display: grid; justify-items: center; gap: 14px; text-align: center; margin-bottom: clamp(26px, 5vh, 50px); }
+.cab h1 { margin: 0; font-size: clamp(42px, 7vw, 76px); font-weight: 700; line-height: 1.05; background: var(--tarjeta);
+  border: 5px solid var(--lila); border-radius: 999px; padding: 8px clamp(24px, 4vw, 40px) 14px; box-shadow: var(--sombra); }
+.q { color: var(--rojo); }
+.cab p { margin: 0; font-size: clamp(19px, 2.4vw, 24px); color: var(--suave); }
+
+.lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 26px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); }
+.act { background: var(--tarjeta); border: 5px solid var(--lila); border-radius: 32px; box-shadow: var(--sombra);
+  overflow: hidden; display: flex; flex-direction: column; }
+.act .dibujo { background: #FBF9FF; border-bottom: 4px dashed #E4DAFB; padding: 14px 14px 8px; }
+.act .dibujo svg { display: block; width: 100%; height: auto; font-family: var(--f); font-weight: 700; }
+.act .info { padding: 18px 22px 24px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+.act h2 { margin: 0; font-size: clamp(26px, 3vw, 32px); font-weight: 700; line-height: 1.1; }
+.act p { margin: 0; color: var(--suave); font-size: 18px; }
+.etiquetas { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.etiquetas li { background: var(--lila-claro); color: var(--lila-osc); border-radius: 999px; padding: 2px 14px 4px; font-size: 15px; }
+.jugar { margin-top: auto; align-self: flex-start; display: inline-flex; align-items: center; gap: 10px; background: var(--sol);
+  color: var(--tinta); text-decoration: none; font-size: 24px; font-weight: 700; border-radius: 24px; padding: 10px 26px 14px;
+  box-shadow: 0 6px 0 rgba(0, 0, 0, .18); transition: transform .12s ease; }
+.jugar:hover { transform: translateY(-2px); }
+.jugar:active { transform: translateY(3px); box-shadow: 0 3px 0 rgba(0, 0, 0, .18); }
+
+.pie { margin-top: 44px; text-align: center; color: var(--suave); font-size: 17px; }
+.pie p { margin: 0; }
+@media (prefers-reduced-motion: reduce) { .jugar { transition: none; } }
+</style>
+</head>
+<body>
+<div class="envoltura">
+  <header class="cab">
+    <h1><span class="q">P</span>reescolar</h1>
+    <p>Juegos y actividades para proyectar en el salón.</p>
+  </header>
+
+  <main>
+    <ul class="lista">
+      <!-- ACTIVIDADES: cada actividad es un <li class="act">. La más nueva va primero. -->
+      <li class="act">
+        <div class="dibujo">
+          <svg viewBox="0 0 440 270" role="img" aria-label="Un gato y un pato: gato y pato terminan igual">
+            <g transform="translate(24 8) scale(.9)"><path d="M148 168 C190 160 196 112 170 102" fill="none" stroke="#3A2A5C" stroke-width="20" stroke-linecap="round"/><path d="M148 168 C190 160 196 112 170 102" fill="none" stroke="#BAC4D8" stroke-width="10" stroke-linecap="round"/><ellipse cx="100" cy="150" rx="50" ry="40" fill="#BAC4D8" stroke="#3A2A5C" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="100" cy="160" rx="27" ry="27" fill="#E9EEF7"/><path d="M58 66 L64 16 L98 44 Z" fill="#BAC4D8" stroke="#3A2A5C" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/><path d="M142 66 L136 16 L102 44 Z" fill="#BAC4D8" stroke="#3A2A5C" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/><path d="M66 54 L70 30 L86 44 Z" fill="#F7B5C8"/><path d="M134 54 L130 30 L114 44 Z" fill="#F7B5C8"/><circle cx="100" cy="84" r="46" fill="#BAC4D8" stroke="#3A2A5C" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="100" cy="102" rx="22" ry="15" fill="#E9EEF7"/><circle cx="82" cy="80" r="7" fill="#3A2A5C"/><circle cx="118" cy="80" r="7" fill="#3A2A5C"/><circle cx="84" cy="77" r="2.4" fill="#FFF"/><circle cx="120" cy="77" r="2.4" fill="#FFF"/><path d="M95 94 L105 94 L100 100 Z" fill="#F28CB1" stroke="#3A2A5C" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M92 105 q8 8 8 0 q0 8 8 0" fill="none" stroke="#3A2A5C" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M74 98 L44 92 M74 106 L46 110 M126 98 L156 92 M126 106 L154 110" fill="none" stroke="#3A2A5C" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="82" cy="186" rx="14" ry="9" fill="#E9EEF7" stroke="#3A2A5C" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="118" cy="186" rx="14" ry="9" fill="#E9EEF7" stroke="#3A2A5C" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/></g>
+            <g transform="translate(236 8) scale(.9)"><path d="M150 128 L188 98 L176 146 Z" fill="#FFD43B" stroke="#3A2A5C" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="112" cy="140" rx="64" ry="42" fill="#FFD43B" stroke="#3A2A5C" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/><path d="M88 182 l-10 12 h24 Z M126 182 l-10 12 h24 Z" fill="#F59B23" stroke="#3A2A5C" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="70" cy="80" r="36" fill="#FFD43B" stroke="#3A2A5C" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/><path d="M38 84 C18 80 12 96 28 100 C38 102 46 100 50 94 Z" fill="#F59B23" stroke="#3A2A5C" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="68" cy="72" r="6" fill="#3A2A5C"/><circle cx="70" cy="70" r="2" fill="#FFF"/><circle cx="82" cy="90" r="7" fill="#F7A9B8" opacity=".8"/><path d="M100 130 C122 116 154 122 160 140 C142 154 116 154 100 130 Z" fill="#F5B417" stroke="#3A2A5C" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/></g>
+            <text x="220" y="120" text-anchor="middle" font-size="40" fill="#6B45C6">y</text>
+            <text x="114" y="252" text-anchor="middle" font-size="50" fill="#2E2350">g<tspan fill="#1E9B55">ato</tspan></text>
+            <text x="326" y="252" text-anchor="middle" font-size="50" fill="#2E2350">p<tspan fill="#1E9B55">ato</tspan></text>
+          </svg>
+        </div>
+        <div class="info">
+          <h2>¿<span class="q">R</span>iman o no riman?</h2>
+          <p>Dos dibujos con su palabra. Si terminan igual, ¡a brincar!; si no, ¡quietos!</p>
+          <ul class="etiquetas"><li>Lenguajes</li><li>Rimas</li><li>8 parejas</li></ul>
+          <a class="jugar" href="riman/">Jugar <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a>
+        </div>
+      </li>
+      <!-- /ACTIVIDADES -->
+    </ul>
+  </main>
+
+  <footer class="pie">
+    <p>Abre una actividad y usa el botón de pantalla completa para proyectarla.</p>
+  </footer>
+</div>
+</body>
+</html>
