@@ -13,6 +13,7 @@ Los otros sitios de Lucraft viven en sus propios repositorios (`lucraft` y `litt
    - No puede usar `window.claude` (base de datos, descargas, etc.) porque aquí no hay servidor. Una actividad que guarda datos se queda en claude.ai.
    - Solo puede cargar fuentes de Google Fonts; todo lo demás va dentro del archivo.
    - Pon un botón de casita que regrese a la portada: `<a href="../" aria-label="Todas las actividades">`.
+   - Copia las etiquetas para compartir que ya tienen las otras páginas (`og:title`, `og:description`, `og:url` con su dirección completa y `og:image` con `https://preescolar.lucraft.com.mx/og.jpg`), para que la liga se vea con imagen en WhatsApp.
 3. Agrega su tarjeta en `public/index.html`, dentro de `<ul class="lista">`, como el primer `<li class="act">` (la más nueva va primero). Copia la estructura de la tarjeta que ya existe: dibujo en SVG, `<h2>` con la mayúscula dentro de `<span class="q">`, una línea de descripción, etiquetas y el enlace `.jugar` con `href="<carpeta>/"`. Los enlaces van siempre relativos (sin `/` al inicio).
 4. Prueba con Playwright sirviendo `public/` como raíz. Revisa que no haya errores en consola, que no haya desplazamiento horizontal a 1280×720 ni a 390×844, y que "Jugar" y la casita lleven a donde deben.
 5. Haz commit en `main` con el mensaje `Agrega <nombre de la actividad>` y luego `git push`.
