@@ -313,6 +313,15 @@ body { background: var(--bg) radial-gradient(circle at 1px 1px, rgba(176, 125, 7
 a.icon-btn { color: inherit; text-decoration: none; display: inline-grid; place-items: center; }
 .nota { margin: 0 0 10px; color: var(--muted); font-size: 16px; }
 #inLista { width: 100%; font: inherit; color: var(--ink); background: var(--surface); border: 2px solid var(--line); border-radius: 14px; padding: 10px 12px; margin-bottom: 10px; resize: vertical; }
+.estado.tarde { background: #FDE2E3; color: #B3261E; }
+.estado.hoy { background: var(--yellow-soft); color: #7A5B00; }
+.ficha .renglon b.tarde { color: #B3261E; }
+.ficha .renglon b.atiempo { color: var(--green); }
+tr.fila-tarde td { background: #FFF4F4; }
+.nombre.atrasado { border-color: #F2A6A9; }
+.aviso-tarde { position: absolute; top: 7px; left: 8px; font-family: var(--f-text); font-size: 12px; font-weight: 700; line-height: 1.2; color: #B3261E; background: #FDE2E3; border-radius: 999px; padding: 2px 8px; }
+#v-registro table { min-width: 860px; }
+@media (max-width: 560px) { .ficha .renglon { grid-template-columns: minmax(0, 92px) minmax(0, 1fr); } .ficha .renglon > span { font-size: 11px; } .ficha .renglon b { font-size: 18px; } }
 </style>
 </head>
 <body>
@@ -362,6 +371,8 @@ a.icon-btn { color: inherit; text-decoration: none; display: inline-grid; place-
     <nav class="tabs" role="tablist" aria-label="Secciones de la biblioteca">
       <button class="tab" role="tab" id="t-prestamos" data-v="prestamos" aria-selected="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6c3-1.6 6-1.6 9 0v13c-3-1.6-6-1.6-9 0z"/><path d="M21 6c-3-1.6-6-1.6-9 0v13c3-1.6 6-1.6 9 0z"/></svg>Préstamos</button>
+      <button class="tab" role="tab" id="t-registro" data-v="registro" aria-selected="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M9 3.5v2h6v-2M8.5 10h7M8.5 14h7M8.5 18h4"/></svg>Registro</button>
       <button class="tab" role="tab" id="t-reglamento" data-v="reglamento" aria-selected="false">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h11a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M8.5 9.5l1.6 1.6 3-3M8.5 15h7"/></svg>Reglamento</button>
       <button class="tab" role="tab" id="t-ajustes" data-v="ajustes" aria-selected="false">
@@ -397,9 +408,9 @@ a.icon-btn { color: inherit; text-decoration: none; display: inline-grid; place-
   <section class="vista" id="v-registro" role="tabpanel" aria-labelledby="t-registro" hidden>
     <div class="cab-vista"><h2>Registro de préstamos</h2><p id="resRegistro"></p></div>
     <h3>Libros que están en casa</h3>
-    <div class="tabla-wrap"><table><thead><tr><th>Nombre</th><th>Libro</th><th>Se lo llevó</th><th>Tiempo</th><th></th></tr></thead><tbody id="tbFuera"></tbody></table></div>
+    <div class="tabla-wrap"><table><thead><tr><th>Nombre</th><th>Libro</th><th>Se lo llevó</th><th>Regresar a más tardar</th><th>Estado</th><th></th></tr></thead><tbody id="tbFuera"></tbody></table></div>
     <h3>Historial</h3>
-    <div class="tabla-wrap"><table><thead><tr><th>Nombre</th><th>Libro</th><th>Se lo llevó</th><th>Lo regresó</th></tr></thead><tbody id="tbHist"></tbody></table></div>
+    <div class="tabla-wrap"><table><thead><tr><th>Nombre</th><th>Libro</th><th>Se lo llevó</th><th>Regresar a más tardar</th><th>Lo regresó</th><th>Retraso</th></tr></thead><tbody id="tbHist"></tbody></table></div>
   </section>
 
   <!-- REGLAMENTO -->
@@ -520,6 +531,25 @@ a.icon-btn { color: inherit; text-decoration: none; display: inline-grid; place-
   const largo = (iso) => fLargo.format(new Date(iso));
   const corto = (iso) => fCorto.format(new Date(iso)).replace('.', '');
   const selloFecha = (d) => `${d.getDate()} ${MESES[d.getMonth()]} ${d.getFullYear()}`;
+  // ---------- plazo: 2 semanas; si cae en sábado o domingo, el lunes ----------
+  const PLAZO_DIAS = 14;
+  const ymd = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const diaLocal = (t) => { const [y, m, d] = String(t).split('-').map(Number); return new Date(y, m - 1, d); };
+  function fechaLimite(salidaISO) {
+    const d = soloDia(new Date(salidaISO)); d.setDate(d.getDate() + PLAZO_DIAS);
+    if (d.getDay() === 6) d.setDate(d.getDate() + 2); else if (d.getDay() === 0) d.setDate(d.getDate() + 1);
+    return ymd(d);
+  }
+  const limiteDe = (p) => p.limite || fechaLimite(p.salida);
+  const retrasoDias = (p, fin) => Math.max(0, Math.round((soloDia(fin ? new Date(fin) : new Date()) - diaLocal(limiteDe(p))) / 86400000));
+  const faltanDias = (p) => Math.round((diaLocal(limiteDe(p)) - soloDia(new Date())) / 86400000);
+  const txtRetraso = (n) => (n === 1 ? '1 día' : `${n} días`);
+  const fHora = new Intl.DateTimeFormat('es-MX', { hour: 'numeric', minute: '2-digit' });
+  const fDiaCorto = new Intl.DateTimeFormat('es-MX', { weekday: 'long', day: 'numeric', month: 'short' });
+  const diaCorto = (d) => fDiaCorto.format(d).replace('.', '');
+  const conHora = (iso) => `${diaCorto(new Date(iso))}, ${fHora.format(new Date(iso))}`;
+  const limiteTxt = (p) => diaCorto(diaLocal(limiteDe(p)));
+  const limiteLargo = (t) => fLargo.format(diaLocal(t));
   const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
 
   const S = { db: null, estado: 'cargando', soloLectura: false, ajustes: undefined, libros: [], prestamos: [], biblio: undefined, flujo: null, vista: 'prestamos' };
@@ -584,7 +614,8 @@ a.icon-btn { color: inherit; text-decoration: none; display: inline-grid; place-
     el.innerHTML = g.map((n, i) => {
       const p = prestamoDe(n);
       const lleva = p ? `<svg class="lleva" viewBox="0 0 34 28" aria-hidden="true"><rect x="3" y="2" width="26" height="24" rx="3" style="fill:${color(libroPorId(p.libroId)?.color ?? p.color)}"/><rect x="3" y="2" width="6" height="24" rx="2" fill="rgba(0,0,0,.22)"/><rect x="13" y="8" width="12" height="5" rx="1.5" fill="#fff"/></svg>` : '';
-      return `<button class="nombre${p ? ' con-libro' : ''}" type="button" data-nino="${esc(n)}" style="--c:${color(i)}" aria-label="${esc(n)}${p ? ', tiene un libro' : ''}"><span>${rojas(n)}</span>${lleva}</button>`;
+      const tarde = p && retrasoDias(p) > 0;
+      return `<button class="nombre${p ? ' con-libro' : ''}${tarde ? ' atrasado' : ''}" type="button" data-nino="${esc(n)}" style="--c:${color(i)}" aria-label="${esc(n)}${p ? ', tiene un libro' : ''}${tarde ? ', ya toca regresarlo' : ''}">${tarde ? '<span class="aviso-tarde">Ya toca regresarlo</span>' : ''}<span>${rojas(n)}</span>${lleva}</button>`;
     }).join('');
   }
   function vacio(txt, extra = '') {
@@ -632,7 +663,8 @@ a.icon-btn { color: inherit; text-decoration: none; display: inline-grid; place-
       const d = dias(p.salida);
       P.innerHTML = `${btnCerrar}<div class="saludo">Hola, ${rojas(n)}<small>Tienes este libro en casa.</small></div>
         <div class="duo">${portada(l)}<div class="acciones"><div class="pregunta">¿Ya lo regresaste?</div>
-          <p class="detalle">Te lo llevaste el ${esc(largo(p.salida))}${d > 0 ? ` (hace ${d === 1 ? '1 día' : d + ' días'})` : ''}.</p>
+          <p class="detalle">Te lo llevaste el ${esc(largo(p.salida))}${d > 0 ? ` (hace ${d === 1 ? '1 día' : d + ' días'})` : ''}. Tocaba regresarlo a más tardar el ${esc(limiteLargo(limiteDe(p)))}.</p>
+          ${retrasoDias(p) ? `<p class="detalle"><span class="estado tarde">${txtRetraso(retrasoDias(p))} de retraso</span></p>` : ''}
           <div class="fila"><button class="btn verde grande" type="button" data-regresar ${S.soloLectura ? 'disabled' : ''}>Sí, ya lo regresé</button>
           <button class="btn grande" type="button" data-cerrar>Todavía no</button></div></div></div>`;
     } else if (f.paso === 'sello') {
@@ -641,7 +673,9 @@ a.icon-btn { color: inherit; text-decoration: none; display: inline-grid; place-
       P.innerHTML = `${btnCerrar}<div class="ficha temblor"><div class="cab"><span>Ficha de préstamo</span><span>${esc((S.ajustes && S.ajustes.nombre) || 'Biblioteca del 2° A')}</span></div>
           <div class="renglon"><span>Nombre</span><b>${rojas(n)}</b></div>
           <div class="renglon"><span>Libro</span><b>${esc(f.titulo || '')}</b></div>
-          <div class="renglon"><span>${rojo ? 'Se lo llevó' : 'Lo regresó'}</span><b>${esc(fLargo.format(ahora))}</b></div>
+          <div class="renglon"><span>${rojo ? 'Se lo llevó' : 'Lo regresó'}</span><b>${esc(conHora(ahora.toISOString()))}</b></div>
+          ${rojo ? `<div class="renglon"><span>Regresar a más tardar</span><b>${esc(diaCorto(diaLocal(f.limite)))}</b></div>`
+            : `<div class="renglon"><span>Entrega</span><b class="${f.retraso ? 'tarde' : 'atiempo'}">${f.retraso ? `Con ${txtRetraso(f.retraso)} de retraso` : 'A tiempo'}</b></div>`}
           <div class="sello golpe ${rojo ? 'rojo' : 'verde'}"><span class="s1">${rojo ? 'PRESTADO' : 'DEVUELTO'}</span><span class="s2">${selloFecha(ahora)}</span></div></div>
         <div class="mensaje-final">${rojo ? '¡Cuídalo mucho y léelo con tu familia!' : '¡Gracias por cuidar el libro!'}</div>
         <div class="fila" style="justify-content:center"><button class="btn principal grande" type="button" data-cerrar>Listo</button></div>`;
@@ -655,16 +689,17 @@ a.icon-btn { color: inherit; text-decoration: none; display: inline-grid; place-
     if (prestamoDe(f.nino)) { avisar(`${f.nino} ya tiene un libro en casa.`); f.paso = 'regresar'; pintarFlujo(); return; }
     if (prestamoDeLibro(l.id)) { avisar('Ese libro ya se lo llevó alguien más. Elige otro.'); f.paso = 'elegir'; pintarFlujo(); return; }
     const btn = $('[data-prestar]'); if (btn) btn.disabled = true;
-    const ok = await escribir((db) => db.collection('prestamos').add({ nino: f.nino, libroId: l.id, titulo: nombreLibro(l), color: l.color ?? 0, tipo: l.tipo || 'cuento', autor: l.autor || '', salida: new Date().toISOString(), regreso: null }));
+    const ok = await escribir((db) => db.collection('prestamos').add({ nino: f.nino, libroId: l.id, titulo: nombreLibro(l), color: l.color ?? 0, tipo: l.tipo || 'cuento', autor: l.autor || '', salida: new Date().toISOString(), limite: fechaLimite(new Date().toISOString()), regreso: null }));
     if (!ok) { if (btn) btn.disabled = false; return; }
-    if (S.flujo === f) { f.paso = 'sello'; f.tipo = 'prestado'; f.titulo = nombreLibro(l); pintarFlujo(); }
+    if (S.flujo === f) { f.paso = 'sello'; f.tipo = 'prestado'; f.limite = fechaLimite(new Date().toISOString()); f.titulo = nombreLibro(l); pintarFlujo(); }
   }
   async function regresar(prestamoId, desdeRegistro) {
     const p = S.prestamos.find((x) => x.id === prestamoId); if (!p) return;
-    const ok = await escribir((db) => db.doc('prestamos/' + p.id).update({ regreso: new Date().toISOString() }));
+    const ahora = new Date().toISOString(), lim = limiteDe(p), ret = retrasoDias(p, ahora);
+    const ok = await escribir((db) => db.doc('prestamos/' + p.id).update({ regreso: ahora, limite: lim, retraso: ret }));
     if (!ok) return;
-    if (desdeRegistro) { avisar(`Listo: ${p.nino} regresó ${p.titulo}.`); return; }
-    const f = S.flujo; if (f) { f.paso = 'sello'; f.tipo = 'devuelto'; f.titulo = p.titulo; pintarFlujo(); }
+    if (desdeRegistro) { avisar(`Listo: ${p.nino} regresó ${p.titulo}${ret ? ` con ${txtRetraso(ret)} de retraso` : ' a tiempo'}.`); return; }
+    const f = S.flujo; if (f) { f.paso = 'sello'; f.tipo = 'devuelto'; f.titulo = p.titulo; f.limite = lim; f.retraso = ret; pintarFlujo(); }
   }
 
   // ---------- libros ----------
@@ -688,15 +723,20 @@ a.icon-btn { color: inherit; text-decoration: none; display: inline-grid; place-
 
   // ---------- registro ----------
   function renderRegistro() {
-    const fuera = activos().sort((a, b) => String(a.salida).localeCompare(String(b.salida)));
-    const hist = [...S.prestamos].sort((a, b) => String(b.salida).localeCompare(String(a.salida))).slice(0, 200);
-    $('#resRegistro').textContent = S.prestamos.length ? `${fuera.length} en casa · ${S.prestamos.length} préstamos en total` : '';
+    const fuera = activos().sort((a, b) => String(limiteDe(a)).localeCompare(String(limiteDe(b))));
+    const hist = [...S.prestamos].sort((a, b) => String(b.salida).localeCompare(String(a.salida))).slice(0, 300);
+    const atrasados = fuera.filter((p) => retrasoDias(p) > 0).length;
+    $('#resRegistro').textContent = S.prestamos.length ? `${fuera.length} en casa${atrasados ? ` · ${atrasados} con retraso` : ''} · ${S.prestamos.length} préstamos en total · Plazo: 2 semanas` : 'Plazo: 2 semanas (si cae en fin de semana, el lunes).';
     const punto = (p) => `<span class="punto" style="--c:${color(libroPorId(p.libroId)?.color ?? p.color)}"></span>`;
-    $('#tbFuera').innerHTML = fuera.length ? fuera.map((p) => `<tr><td><b>${rojas(p.nino)}</b></td><td>${punto(p)}${esc(p.titulo)}</td><td class="num">${esc(corto(p.salida))}</td><td class="num">${esc(txtDias(dias(p.salida)))}</td>
+    const estado = (p) => { const r = retrasoDias(p), f = faltanDias(p);
+      return r ? `<span class="estado tarde">${txtRetraso(r)} de retraso</span>` : f === 0 ? '<span class="estado hoy">Se regresa hoy</span>' : `<span class="estado libre">Faltan ${txtRetraso(f)}</span>`; };
+    $('#tbFuera').innerHTML = fuera.length ? fuera.map((p) => `<tr${retrasoDias(p) ? ' class="fila-tarde"' : ''}><td><b>${rojas(p.nino)}</b></td><td>${punto(p)}${esc(p.titulo)}</td><td class="num">${esc(conHora(p.salida))}</td><td class="num">${esc(limiteTxt(p))}</td><td>${estado(p)}</td>
       <td>${S.soloLectura ? '' : `<button class="btn" type="button" data-regreso-reg="${esc(p.id)}">Ya lo regresó</button>`}</td></tr>`).join('')
-      : `<tr><td colspan="5" style="color:var(--muted)">${S.estado === 'ok' ? 'Todos los libros están en la biblioteca.' : 'Aquí aparecerán los libros prestados.'}</td></tr>`;
-    $('#tbHist').innerHTML = hist.length ? hist.map((p) => `<tr><td><b>${rojas(p.nino)}</b></td><td>${punto(p)}${esc(p.titulo)}</td><td class="num">${esc(corto(p.salida))}</td><td class="num">${p.regreso ? esc(corto(p.regreso)) : '<span class="estado fuera">En casa</span>'}</td></tr>`).join('')
-      : `<tr><td colspan="4" style="color:var(--muted)">Cuando alguien se lleve un libro, aparecerá aquí.</td></tr>`;
+      : `<tr><td colspan="6" style="color:var(--muted)">Todos los libros están en la biblioteca.</td></tr>`;
+    const retraso = (p) => { if (!p.regreso) { const r = retrasoDias(p); return r ? `<span class="estado tarde">${txtRetraso(r)} y sigue en casa</span>` : '<span class="estado fuera">En casa</span>'; }
+      const r = p.retraso ?? retrasoDias(p, p.regreso); return r ? `<span class="estado tarde">${txtRetraso(r)}</span>` : '<span class="estado libre">A tiempo</span>'; };
+    $('#tbHist').innerHTML = hist.length ? hist.map((p) => `<tr><td><b>${rojas(p.nino)}</b></td><td>${punto(p)}${esc(p.titulo)}</td><td class="num">${esc(conHora(p.salida))}</td><td class="num">${esc(limiteTxt(p))}</td><td class="num">${p.regreso ? esc(conHora(p.regreso)) : '—'}</td><td>${retraso(p)}</td></tr>`).join('')
+      : `<tr><td colspan="6" style="color:var(--muted)">Cuando alguien se lleve un libro, aparecerá aquí.</td></tr>`;
   }
 
   // ---------- reglamento ----------
@@ -853,7 +893,7 @@ a.icon-btn { color: inherit; text-decoration: none; display: inline-grid; place-
 
   // ---------- vistas ----------
   function irA(v) {
-    if (!['prestamos', 'reglamento', 'ajustes'].includes(v)) v = 'prestamos';
+    if (!['prestamos', 'registro', 'reglamento', 'ajustes'].includes(v)) v = 'prestamos';
     S.vista = v; store.set('biblio-vista', v);
     $$('.tab').forEach((t) => t.setAttribute('aria-selected', String(t.dataset.v === v)));
     $$('.vista[role="tabpanel"]').forEach((s) => { s.hidden = s.id !== 'v-' + v; });
@@ -928,10 +968,10 @@ a.icon-btn { color: inherit; text-decoration: none; display: inline-grid; place-
     const col = S.libros.length % 7; let ref = null;
     S.agregando = true; const btn = e.target.querySelector('button'); if (btn) btn.disabled = true;
     const ok1 = await escribir(async (db) => { ref = ref || await db.collection('libros').add({ titulo, color: col, tipo: 'cuento', autor: '', alta: new Date().toISOString() }); });
-    const ok2 = ok1 && ref && await escribir((db) => db.collection('prestamos').add({ nino: f.nino, libroId: ref.id, titulo, color: col, tipo: 'cuento', autor: '', salida: new Date().toISOString(), regreso: null }));
+    const ok2 = ok1 && ref && await escribir((db) => db.collection('prestamos').add({ nino: f.nino, libroId: ref.id, titulo, color: col, tipo: 'cuento', autor: '', salida: new Date().toISOString(), limite: fechaLimite(new Date().toISOString()), regreso: null }));
     S.agregando = false;
     if (!ok2) { if (btn) btn.disabled = false; if (ok1) { $('#inRapido').value = ''; pintarFlujo(); avisar('El libro ya quedó en la lista; tócalo para prestarlo.'); } return; }
-    if (S.flujo === f) { f.paso = 'sello'; f.tipo = 'prestado'; f.titulo = titulo; pintarFlujo(); }
+    if (S.flujo === f) { f.paso = 'sello'; f.tipo = 'prestado'; f.limite = fechaLimite(new Date().toISOString()); f.titulo = titulo; pintarFlujo(); }
   });
   $('#btnElegir').addEventListener('click', () => elegirBibliotecario(false));
   $('#btnReelegir').addEventListener('click', () => elegirBibliotecario(true));
@@ -1037,8 +1077,8 @@ a.icon-btn { color: inherit; text-decoration: none; display: inline-grid; place-
     const n = f.nino;
     if (f.paso === 'elegir') return `Hola, ${n}. Elige el libro que te quieres llevar.`;
     if (f.paso === 'confirmar') return `${nombreLibro(libroPorId(f.libroId))}. ¿Te lo llevas a casa?`;
-    if (f.paso === 'regresar') return `Hola, ${n}. Tienes un libro en casa. ¿Ya lo regresaste?`;
-    if (f.paso === 'sello') return f.tipo === 'prestado' ? `¡Prestado! ${n}, cuídalo mucho y léelo con tu familia.` : `¡Devuelto! Gracias por cuidar el libro, ${n}.`;
+    if (f.paso === 'regresar') { const pr = prestamoDe(n); return `Hola, ${n}. Tienes un libro en casa.${pr && retrasoDias(pr) ? ' Ya toca regresarlo.' : ''} ¿Ya lo regresaste?`; }
+    if (f.paso === 'sello') return f.tipo === 'prestado' ? `¡Prestado! ${n}, cuídalo mucho y léelo con tu familia. Regrésalo a más tardar el ${limiteLargo(f.limite)}.` : `¡Devuelto! Gracias por cuidar el libro, ${n}.${f.retraso ? ` Llegó con ${txtRetraso(f.retraso)} de retraso.` : ''}`;
     return '';
   }
   function botonVoz(t) {
