@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Palabras con letras</title>
+<meta name="description" content="Para proyectar en preescolar: un dibujo con su palabra para copiarla con el alfabeto móvil y contar sus letras.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Preescolar">
+<meta property="og:locale" content="es_MX">
+<meta property="og:title" content="Palabras con letras">
+<meta property="og:description" content="Para proyectar en preescolar: un dibujo con su palabra para copiarla con el alfabeto móvil y contar sus letras.">
+<meta property="og:url" content="https://preescolar.lucraft.com.mx/palabras/">
+<meta property="og:image" content="https://preescolar.lucraft.com.mx/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#FFF8E1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='6' width='52' height='52' rx='14' fill='%23FFE14D'/%3E%3Ctext x='32' y='45' font-size='36' text-anchor='middle' font-family='sans-serif' font-weight='700' fill='%23E1262D'%3EP%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mali:wght@600;700&display=swap">
+<style>
+:root {
+  --bg: #FFF8E1; --tarjeta: #FFFFFF; --tinta: #2E2350; --borde: #FFD54A; --borde-osc: #C98A00; --rojo: #E1262D;
+  --lila-osc: #6B45C6; --sombra: 0 6px 0 #F3DC8E;
+  --f: "Mali", "Comic Sans MS", "Chalkboard SE", system-ui, sans-serif; color-scheme: light;
+}
+html, body { height: 100%; margin: 0; }
+[hidden] { display: none !important; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--tinta); font-family: var(--f); font-weight: 700; overflow-x: hidden; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 4px solid var(--lila-osc); outline-offset: 4px; }
+.app { min-height: 100%; height: 100%; display: flex; flex-direction: column; gap: clamp(8px, 1.6vh, 18px);
+  padding-block: clamp(10px, 2vh, 22px); padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px)); }
+.cab { display: flex; align-items: center; justify-content: space-between; gap: 10px 16px; flex-wrap: wrap; }
+.cab h1 { margin: 0; font-size: clamp(26px, 4.2vh, 46px); line-height: 1.05; background: var(--tarjeta); border: 4px solid var(--borde); border-radius: 999px; padding: 6px 26px 10px; box-shadow: var(--sombra); }
+.q { color: var(--rojo); }
+.puntos { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.punto { width: 18px; height: 18px; border-radius: 50%; background: var(--tarjeta); border: 3px solid var(--borde); }
+.punto.hecho { background: var(--borde); }
+.punto.actual { background: #FF8FA3; border-color: #E0526E; transform: scale(1.25); }
+.punto.reto { border-radius: 4px; }
+.punto.estrella { border-radius: 4px; transform: rotate(45deg); }
+.iconos { display: flex; gap: 10px; }
+.icono { width: 52px; height: 52px; border-radius: 16px; border: 4px solid var(--borde); background: var(--tarjeta); display: grid; place-items: center; box-shadow: var(--sombra); color: inherit; text-decoration: none; }
+.icono svg { width: 24px; height: 24px; }
+
+.escena { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(10px, 2.5vw, 34px); align-items: center; }
+.dibujo { background: var(--tarjeta); border: 6px solid var(--borde); border-radius: 36px; box-shadow: var(--sombra); height: 100%; max-height: 100%; min-height: 0;
+  display: grid; place-items: center; padding: clamp(8px, 2vh, 22px); position: relative; }
+.dibujo svg { width: min(100%, 52vh); height: auto; aspect-ratio: 1; }
+.dibujo .etq { position: absolute; top: 12px; left: 16px; font-size: clamp(14px, 2vh, 18px); background: #FFE0E6; color: #B3261E; border-radius: 999px; padding: 2px 12px; }
+.lado { display: flex; flex-direction: column; align-items: center; gap: clamp(10px, 2.4vh, 26px); min-width: 0; }
+.letras { display: flex; gap: clamp(8px, 1.6vw, 20px); justify-content: center; flex-wrap: wrap; }
+.ficha { position: relative; width: clamp(78px, min(13vw, 22vh), 170px); aspect-ratio: 1; border-radius: 22px; border: 0; background: var(--tarjeta);
+  box-shadow: 0 8px 0 var(--sh, #D9C7F5), inset 0 0 0 6px var(--c, #B79CF0); font-size: clamp(56px, min(10vw, 17vh), 132px); line-height: 1; display: grid; place-items: center;
+  transition: transform .15s ease, background .2s ease; }
+.ficha:active { transform: translateY(4px); }
+.ficha.tapada { background: repeating-linear-gradient(-45deg, #FFFFFF 0 12px, #F6F1FF 12px 24px); color: transparent; }
+.ficha.tapada::after { content: "?"; color: var(--c); font-size: .6em; position: absolute; }
+.ficha.cuenta { background: var(--c); animation: salta .35s ease; }
+.ficha .num { position: absolute; bottom: -46px; left: 50%; transform: translateX(-50%); font-size: clamp(22px, 3.6vh, 34px); width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--tinta); color: #FFF; display: grid; place-items: center; }
+@keyframes salta { 40% { transform: translateY(-14px) scale(1.06); } }
+.resultado { min-height: clamp(54px, 9vh, 90px); margin-top: 30px; font-size: clamp(26px, 5vh, 52px); text-align: center; }
+.resultado .n { display: inline-grid; place-items: center; width: 1.5em; height: 1.5em; border-radius: 50%; background: var(--rojo); color: #FFF; margin-inline: 6px; }
+
+.pie { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.btn { border: 0; border-radius: 26px; padding: 12px 26px 16px; font-size: clamp(20px, 3.4vh, 34px); box-shadow: 0 6px 0 rgba(0, 0, 0, .18); display: inline-flex; align-items: center; gap: 10px; }
+.btn:active { transform: translateY(3px); box-shadow: 0 3px 0 rgba(0, 0, 0, .18); }
+.btn svg { width: 1em; height: 1em; }
+.btn.amarillo { background: #FFD54A; }
+.btn.rosa { background: #FF8FA3; }
+.btn.verde { background: #8EE3B0; }
+.btn.sig { background: var(--lila-osc); color: #FFF; }
+.btn.chico { background: var(--tarjeta); border: 4px solid var(--borde); box-shadow: var(--sombra); font-size: clamp(16px, 2.4vh, 22px); padding: 10px 18px 12px; }
+
+.final { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(8px, 2vh, 20px); text-align: center; }
+.final .todas { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.final .todas svg { width: clamp(70px, 12vh, 120px); height: auto; background: #FFF; border-radius: 20px; border: 4px solid var(--borde); }
+.final h2 { margin: 0; font-size: clamp(30px, 6vh, 60px); line-height: 1.1; }
+.reloj { font-size: clamp(30px, 6vh, 60px); font-variant-numeric: tabular-nums; min-width: 4ch; }
+.fila { display: flex; gap: 14px; align-items: center; justify-content: center; flex-wrap: wrap; }
+
+@media (max-width: 700px) {
+  .app { height: auto; }
+  .escena { grid-template-columns: 1fr; align-items: start; flex: none; }
+  .dibujo { height: auto; max-height: none; }
+  .resultado { margin-top: 40px; }
+  .dibujo svg { width: min(70vw, 34vh); }
+  .ficha { width: 21vw; font-size: 15vw; border-radius: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .ficha, .ficha.cuenta { animation: none; transition: none; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="cab">
+    <h1><span class="q">P</span>alabras con letras</h1>
+    <div class="puntos" id="puntos" aria-label="Avance"></div>
+    <div class="iconos">
+      <a class="icono" href="../" aria-label="Todas las actividades" title="Todas las actividades">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg>
+      </a>
+      <button class="icono" id="btnPantalla" type="button" aria-label="Pantalla completa" title="Pantalla completa">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="escena" id="escena">
+    <button class="dibujo" id="dibujo" type="button"></button>
+    <div class="lado">
+      <div class="letras" id="letras" aria-live="polite"></div>
+      <div class="resultado" id="resultado" aria-live="polite"></div>
+    </div>
+  </main>
+
+  <section class="final" id="final" hidden>
+    <div class="todas" id="todas"></div>
+    <h2>¡<span class="q">M</span>uy bien! Ahora dos niños<br>explican su objeto.</h2>
+    <div class="fila">
+      <button class="btn amarillo" id="btnMinuto" type="button">1 minuto</button>
+      <div class="reloj" id="reloj" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <footer class="pie" id="pie">
+    <button class="btn chico" id="btnAtras" type="button">Anterior</button>
+    <button class="btn amarillo" id="btnOir" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9a4 4 0 0 1 0 6"/></svg>Escuchar</button>
+    <button class="btn rosa" id="btnTapar" type="button">Tapar letras</button>
+    <button class="btn verde" id="btnContar" type="button">Contar letras</button>
+    <button class="btn sig" id="btnSig" type="button">Siguiente</button>
+  </footer>
+</div>
+
+<script>
+(() => {
+  'use strict';
+  const PALABRAS = [["SOL", "sol"], ["OSO", "oso"], ["PAN", "pan"], ["MESA", "mesa"], ["GATO", "gato"], ["CASA", "casa"]], DIBUJOS = {"sol": "<line x1=\"166.0\" y1=\"100.0\" x2=\"190.0\" y2=\"100.0\" stroke=\"#3A2A5C\" stroke-width=\"20\" stroke-linecap=\"round\"/><line x1=\"166.0\" y1=\"100.0\" x2=\"190.0\" y2=\"100.0\" stroke=\"#F59B23\" stroke-width=\"10\" stroke-linecap=\"round\"/><line x1=\"146.6690476001952\" y1=\"146.6690475164291\" x2=\"163.63961036390253\" y2=\"163.63961024967602\" stroke=\"#3A2A5C\" stroke-width=\"20\" stroke-linecap=\"round\"/><line x1=\"146.6690476001952\" y1=\"146.6690475164291\" x2=\"163.63961036390253\" y2=\"163.63961024967602\" stroke=\"#F59B23\" stroke-width=\"10\" stroke-linecap=\"round\"/><line x1=\"100.00000011846318\" y1=\"166.0\" x2=\"100.00000016154068\" y2=\"190.0\" stroke=\"#3A2A5C\" stroke-width=\"20\" stroke-linecap=\"round\"/><line x1=\"100.00000011846318\" y1=\"166.0\" x2=\"100.00000016154068\" y2=\"190.0\" stroke=\"#F59B23\" stroke-width=\"10\" stroke-linecap=\"round\"/><line x1=\"53.33095256733703\" y1=\"146.6690476839613\" x2=\"36.36038986455049\" y2=\"163.63961047812904\" stroke=\"#3A2A5C\" stroke-width=\"20\" stroke-linecap=\"round\"/><line x1=\"53.33095256733703\" y1=\"146.6690476839613\" x2=\"36.36038986455049\" y2=\"163.63961047812904\" stroke=\"#F59B23\" stroke-width=\"10\" stroke-linecap=\"round\"/><line x1=\"34.0\" y1=\"100.00000023692634\" x2=\"10.0\" y2=\"100.00000032308137\" stroke=\"#3A2A5C\" stroke-width=\"20\" stroke-linecap=\"round\"/><line x1=\"34.0\" y1=\"100.00000023692634\" x2=\"10.0\" y2=\"100.00000032308137\" stroke=\"#F59B23\" stroke-width=\"10\" stroke-linecap=\"round\"/><line x1=\"53.33095223227258\" y1=\"53.330952651103146\" x2=\"36.360389407644426\" y2=\"36.36038997877702\" stroke=\"#3A2A5C\" stroke-width=\"20\" stroke-linecap=\"round\"/><line x1=\"53.33095223227258\" y1=\"53.330952651103146\" x2=\"36.360389407644426\" y2=\"36.36038997877702\" stroke=\"#F59B23\" stroke-width=\"10\" stroke-linecap=\"round\"/><line x1=\"99.99999964461051\" y1=\"34.0\" x2=\"99.99999951537797\" y2=\"10.0\" stroke=\"#3A2A5C\" stroke-width=\"20\" stroke-linecap=\"round\"/><line x1=\"99.99999964461051\" y1=\"34.0\" x2=\"99.99999951537797\" y2=\"10.0\" stroke=\"#F59B23\" stroke-width=\"10\" stroke-linecap=\"round\"/><line x1=\"146.66904726513076\" y1=\"53.33095214850648\" x2=\"163.6396099069965\" y2=\"36.36038929341793\" stroke=\"#3A2A5C\" stroke-width=\"20\" stroke-linecap=\"round\"/><line x1=\"146.66904726513076\" y1=\"53.33095214850648\" x2=\"163.6396099069965\" y2=\"36.36038929341793\" stroke=\"#F59B23\" stroke-width=\"10\" stroke-linecap=\"round\"/><circle cx=\"100\" cy=\"100\" r=\"54\" fill=\"#FFD43B\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"82\" cy=\"92\" r=\"6\" fill=\"#3A2A5C\"/><circle cx=\"118\" cy=\"92\" r=\"6\" fill=\"#3A2A5C\"/><circle cx=\"70\" cy=\"110\" r=\"8\" fill=\"#F7A0A8\" opacity=\".8\"/><circle cx=\"130\" cy=\"110\" r=\"8\" fill=\"#F7A0A8\" opacity=\".8\"/><path d=\"M84 112 q16 16 32 0\" fill=\"none\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>", "oso": "<circle cx=\"52\" cy=\"58\" r=\"26\" fill=\"#B07A4F\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"148\" cy=\"58\" r=\"26\" fill=\"#B07A4F\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"52\" cy=\"58\" r=\"12\" fill=\"#E8B98C\"/><circle cx=\"148\" cy=\"58\" r=\"12\" fill=\"#E8B98C\"/><circle cx=\"100\" cy=\"110\" r=\"68\" fill=\"#B07A4F\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><ellipse cx=\"100\" cy=\"136\" rx=\"34\" ry=\"27\" fill=\"#E8B98C\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"76\" cy=\"98\" r=\"8\" fill=\"#3A2A5C\"/><circle cx=\"124\" cy=\"98\" r=\"8\" fill=\"#3A2A5C\"/><circle cx=\"78\" cy=\"95\" r=\"2.6\" fill=\"#FFF\"/><circle cx=\"126\" cy=\"95\" r=\"2.6\" fill=\"#FFF\"/><ellipse cx=\"100\" cy=\"126\" rx=\"12\" ry=\"9\" fill=\"#3A2A5C\"/><path d=\"M100 135 v8 M88 146 q12 10 24 0\" fill=\"none\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linecap=\"round\"/><circle cx=\"62\" cy=\"128\" r=\"8\" fill=\"#F7A9B8\" opacity=\".75\"/><circle cx=\"138\" cy=\"128\" r=\"8\" fill=\"#F7A9B8\" opacity=\".75\"/>", "pan": "<g transform=\"translate(100 104) scale(1.18) translate(-100 -114)\"><path d=\"M24 138 C24 70 176 70 176 138 Z\" fill=\"#F7C6D9\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M22 138 C22 160 178 160 178 138 Z\" fill=\"#E9A65C\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M100 82 V136 M64 92 C76 108 80 124 80 136 M136 92 C124 108 120 124 120 136 M40 112 C54 120 60 128 62 136 M160 112 C146 120 140 128 138 136\" fill=\"none\" stroke=\"#C9739A\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M44 106 C80 96 120 96 156 106\" fill=\"none\" stroke=\"#C9739A\" stroke-width=\"5\" stroke-linecap=\"round\"/><\/g>", "mesa": "<rect x=\"58\" y=\"102\" width=\"12\" height=\"54\" rx=\"4\" fill=\"#9A6332\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><rect x=\"130\" y=\"102\" width=\"12\" height=\"54\" rx=\"4\" fill=\"#9A6332\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M30 74 L170 74 L186 94 L14 94 Z\" fill=\"#E0A96D\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><rect x=\"14\" y=\"94\" width=\"172\" height=\"18\" rx=\"4\" fill=\"#C98B4B\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><rect x=\"24\" y=\"110\" width=\"16\" height=\"76\" rx=\"5\" fill=\"#B47A41\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><rect x=\"160\" y=\"110\" width=\"16\" height=\"76\" rx=\"5\" fill=\"#B47A41\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M70 84 h60\" stroke=\"#F3CFA0\" stroke-width=\"5\" stroke-linecap=\"round\"/>", "gato": "<path d=\"M148 168 C190 160 196 112 170 102\" fill=\"none\" stroke=\"#3A2A5C\" stroke-width=\"20\" stroke-linecap=\"round\"/><path d=\"M148 168 C190 160 196 112 170 102\" fill=\"none\" stroke=\"#BAC4D8\" stroke-width=\"10\" stroke-linecap=\"round\"/><ellipse cx=\"100\" cy=\"150\" rx=\"50\" ry=\"40\" fill=\"#BAC4D8\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><ellipse cx=\"100\" cy=\"160\" rx=\"27\" ry=\"27\" fill=\"#E9EEF7\"/><path d=\"M58 66 L64 16 L98 44 Z\" fill=\"#BAC4D8\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M142 66 L136 16 L102 44 Z\" fill=\"#BAC4D8\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M66 54 L70 30 L86 44 Z\" fill=\"#F7B5C8\"/><path d=\"M134 54 L130 30 L114 44 Z\" fill=\"#F7B5C8\"/><circle cx=\"100\" cy=\"84\" r=\"46\" fill=\"#BAC4D8\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><ellipse cx=\"100\" cy=\"102\" rx=\"22\" ry=\"15\" fill=\"#E9EEF7\"/><circle cx=\"82\" cy=\"80\" r=\"7\" fill=\"#3A2A5C\"/><circle cx=\"118\" cy=\"80\" r=\"7\" fill=\"#3A2A5C\"/><circle cx=\"84\" cy=\"77\" r=\"2.4\" fill=\"#FFF\"/><circle cx=\"120\" cy=\"77\" r=\"2.4\" fill=\"#FFF\"/><path d=\"M95 94 L105 94 L100 100 Z\" fill=\"#F28CB1\" stroke=\"#3A2A5C\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M92 105 q8 8 8 0 q0 8 8 0\" fill=\"none\" stroke=\"#3A2A5C\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M74 98 L44 92 M74 106 L46 110 M126 98 L156 92 M126 106 L154 110\" fill=\"none\" stroke=\"#3A2A5C\" stroke-width=\"3.5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><ellipse cx=\"82\" cy=\"186\" rx=\"14\" ry=\"9\" fill=\"#E9EEF7\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><ellipse cx=\"118\" cy=\"186\" rx=\"14\" ry=\"9\" fill=\"#E9EEF7\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>", "casa": "<rect x=\"128\" y=\"34\" width=\"20\" height=\"44\" fill=\"#C9483E\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><rect x=\"44\" y=\"92\" width=\"112\" height=\"92\" fill=\"#FFE7C2\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M26 100 L100 34 L174 100 Z\" fill=\"#E85A4F\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><rect x=\"88\" y=\"128\" width=\"28\" height=\"56\" rx=\"5\" fill=\"#A0663A\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"109\" cy=\"158\" r=\"3\" fill=\"#3A2A5C\"/><rect x=\"54\" y=\"112\" width=\"26\" height=\"24\" rx=\"3\" fill=\"#9FD3F5\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M67 112 v24 M54 124 h26\" stroke=\"#3A2A5C\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><rect x=\"124\" y=\"112\" width=\"26\" height=\"24\" rx=\"3\" fill=\"#9FD3F5\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M137 112 v24 M124 124 h26\" stroke=\"#3A2A5C\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"30\" cy=\"176\" r=\"16\" fill=\"#7CC85A\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"170\" cy=\"176\" r=\"16\" fill=\"#7CC85A\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M10 190 h180\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>"}, NOMBRES = {"S": "ese", "O": "o", "L": "ele", "P": "pe", "A": "a", "N": "ene", "M": "eme", "E": "e", "G": "ge", "T": "te", "C": "ce"};
+  const BASICAS = 3;
+  const COLORES = [['#FF8FA3', '#F3B3C0'], ['#FFB347', '#F7CF95'], ['#5DD39E', '#A9E8C9'], ['#6EC6FF', '#B5E0FF'], ['#C792EA', '#E0C6F4']];
+  const NUM = ['', 'una', 'dos', 'tres', 'cuatro', 'cinco'];
+  const $ = (s) => document.querySelector(s);
+  let i = 0, tapada = false, contando = false, timers = [];
+
+  let ac = null;
+  const audio = () => { try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === 'suspended') ac.resume(); return ac; } catch (e) { return null; } };
+  function tono(f1, f2, ini, dur, vol, tipo) {
+    const a = audio(); if (!a) return;
+    const t = a.currentTime + ini, o = a.createOscillator(), g = a.createGain();
+    o.type = tipo || 'sine'; o.frequency.setValueAtTime(f1, t); o.frequency.exponentialRampToValueAtTime(f2, t + dur);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g).connect(a.destination); o.start(t); o.stop(t + dur + 0.05);
+  }
+  let voces = [];
+  function vozFemenina(vs) {
+    const es = (vs || []).filter((x) => /^es/i.test(x.lang));
+    const fem = /paulina|ang[eé]lica|marisol|m[oó]nica|soledad|isabela|esperanza|sabina|dalia|helena|laura|elvira|paloma|valentina|ximena|renata|lupe|female|mujer|google español/i;
+    const masc = /juan|jorge|diego|carlos|ra[uú]l|pablo|[aá]lvaro|enrique|male\b|hombre/i;
+    const mx = (x) => /es[-_](MX|419)/i.test(x.lang), us = (x) => /es[-_]US/i.test(x.lang);
+    return es.find((x) => mx(x) && fem.test(x.name)) || es.find((x) => us(x) && fem.test(x.name)) || es.find((x) => fem.test(x.name))
+      || es.find((x) => mx(x) && !masc.test(x.name)) || es.find((x) => !masc.test(x.name)) || es[0] || null;
+  }
+  const cargarVoces = () => { try { voces = window.speechSynthesis ? window.speechSynthesis.getVoices() : []; } catch (e) { voces = []; } };
+  cargarVoces(); try { window.speechSynthesis && window.speechSynthesis.addEventListener('voiceschanged', cargarVoces); } catch (e) {}
+  function decir(t, cancelar = true) {
+    try {
+      const s = window.speechSynthesis; if (!s) return;
+      if (cancelar) s.cancel();
+      const u = new SpeechSynthesisUtterance(t); u.lang = 'es-MX'; u.rate = 0.8; u.pitch = 1.2;
+      const v = vozFemenina(voces); if (v) u.voice = v; s.speak(u);
+    } catch (e) {}
+  }
+  const limpiar = () => { timers.forEach(clearTimeout); timers = []; contando = false; };
+  const svg = (k, cls = '') => `<svg viewBox="0 0 200 200" role="img" aria-label="${k}" class="${cls}">${DIBUJOS[k]}</svg>`;
+
+  function puntos() {
+    $('#puntos').innerHTML = PALABRAS.map((_, k) => `<span class="punto${k >= BASICAS ? ' reto' : ''}${k < i ? ' hecho' : ''}${k === i ? ' actual' : ''}"></span>`).join('')
+      + `<span class="punto estrella${i >= PALABRAS.length ? ' actual' : ''}"></span>`;
+  }
+  function pintar() {
+    puntos();
+    const fin = i >= PALABRAS.length;
+    $('#escena').hidden = fin; $('#final').hidden = !fin;
+    ['#btnOir', '#btnTapar', '#btnContar', '#btnSig'].forEach((s) => { $(s).hidden = fin; });
+    $('#btnAtras').hidden = i === 0; $('#btnAtras').textContent = fin ? 'Volver' : 'Anterior';
+    if (fin) { $('#todas').innerHTML = PALABRAS.map(([, k]) => svg(k)).join(''); return; }
+    const [w, k] = PALABRAS[i];
+    $('#dibujo').innerHTML = `${i >= BASICAS ? '<span class="etq">Reto</span>' : ''}${svg(k)}`;
+    $('#dibujo').setAttribute('aria-label', `${k}, toca para escuchar`);
+    $('#letras').innerHTML = [...w].map((l, n) => { const [c, sh] = COLORES[n % COLORES.length];
+      return `<button class="ficha${tapada ? ' tapada' : ''}" type="button" data-n="${n}" style="--c:${c};--sh:${sh}" aria-label="${tapada ? 'letra tapada' : 'letra ' + NOMBRES[l]}">${l}</button>`; }).join('');
+    $('#resultado').innerHTML = '';
+    $('#btnTapar').textContent = tapada ? 'Destapar' : 'Tapar letras';
+  }
+  function contar() {
+    if (contando) return; limpiar(); contando = true; audio();
+    const [w, k] = PALABRAS[i], fichas = [...document.querySelectorAll('.ficha')];
+    fichas.forEach((f) => { f.classList.remove('cuenta', 'tapada'); f.querySelector('.num') && f.querySelector('.num').remove(); });
+    $('#resultado').innerHTML = '';
+    try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) {}
+    fichas.forEach((f, n) => timers.push(setTimeout(() => {
+      f.classList.add('cuenta'); f.insertAdjacentHTML('beforeend', `<span class="num">${n + 1}</span>`);
+      tono(440 + n * 110, 520 + n * 110, 0, 0.2, 0.22); decir(String(n + 1));
+    }, 300 + n * 1000)));
+    timers.push(setTimeout(() => {
+      const nombre = k.charAt(0).toUpperCase() + k.slice(1);
+      $('#resultado').innerHTML = `${nombre} tiene <span class="n">${w.length}</span> letras`;
+      tono(660, 990, 0, 0.35, 0.25); decir(`${nombre} tiene ${NUM[w.length]} letras.`); contando = false;
+    }, 300 + fichas.length * 1000));
+  }
+  function ir(n) { limpiar(); i = Math.max(0, Math.min(PALABRAS.length, n)); tapada = false; parar(); pintar();
+    if (i < PALABRAS.length) decir(PALABRAS[i][1]); }
+
+  let tReloj = 0;
+  function parar() { clearInterval(tReloj); $('#reloj').textContent = ''; $('#btnMinuto').textContent = '1 minuto'; }
+  $('#btnMinuto').addEventListener('click', () => {
+    audio(); clearInterval(tReloj); let s = 60; $('#reloj').textContent = '1:00'; $('#btnMinuto').textContent = 'Otra vez';
+    tReloj = setInterval(() => { s--; $('#reloj').textContent = `0:${String(s).padStart(2, '0')}`; if (s <= 0) { clearInterval(tReloj); $('#reloj').textContent = '¡Listo!'; tono(660, 880, 0, 0.4, 0.25); } }, 1000);
+  });
+  $('#dibujo').addEventListener('click', () => { audio(); decir(PALABRAS[i][1]); });
+  $('#btnOir').addEventListener('click', () => { audio(); const [w, k] = PALABRAS[i]; decir(`${k}. ${[...w].map((l) => NOMBRES[l]).join(', ')}. ${k}.`); });
+  $('#btnContar').addEventListener('click', contar);
+  $('#btnTapar').addEventListener('click', () => { limpiar(); tapada = !tapada; pintar(); });
+  $('#letras').addEventListener('click', (e) => {
+    const f = e.target.closest('.ficha'); if (!f || contando) return; audio();
+    const l = PALABRAS[i][0][Number(f.dataset.n)];
+    if (f.classList.contains('tapada')) { f.classList.remove('tapada'); f.setAttribute('aria-label', 'letra ' + NOMBRES[l]); tono(520, 780, 0, 0.2, 0.2); }
+    decir(NOMBRES[l]);
+  });
+  $('#btnSig').addEventListener('click', () => ir(i + 1));
+  $('#btnAtras').addEventListener('click', () => ir(i - 1));
+  document.addEventListener('keydown', (e) => {
+    if ((e.key === ' ' || e.key === 'Enter') && e.target && e.target.closest && e.target.closest('button')) return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); ir(i + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') ir(i - 1);
+  });
+  $('#btnPantalla').addEventListener('click', () => {
+    try {
+      if (document.fullscreenElement) { document.exitFullscreen && document.exitFullscreen().catch(() => {}); }
+      else if (document.documentElement.requestFullscreen) { document.documentElement.requestFullscreen().catch(() => {}); }
+    } catch (e) {}
+  });
+  pintar();
+})();
+</script>
+</body>
+</html>

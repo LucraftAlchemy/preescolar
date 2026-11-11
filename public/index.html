@@ -85,6 +85,7 @@ body { background: #A9D8F5 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .mosaico svg { position: absolute; left: 8%; right: 8%; top: 2%; width: 84%; height: 72%; }
 .linea * { fill: #fff; stroke: #2B2B2B; stroke-width: 3.2px; stroke-linejoin: round; stroke-linecap: round; }
 .linea .relleno-negro { fill: #2B2B2B; }
+.linea .sin { fill: none; stroke-width: 7px; }
 .ir { font-family: var(--f); font-weight: 700; font-size: 21px; color: var(--tinta); text-decoration: none; }
 .ir:hover { text-decoration: underline; }
 .act p { margin: 0; color: #2E4A6B; font-size: 16px; font-weight: 600; }
@@ -117,6 +118,22 @@ body { background: #A9D8F5 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
         </a>
         <a class="ir" href="biblioteca/"><span class="q">B</span>iblioteca →</a>
         <p>Préstamos con ficha y sello, y reglamento.</p>
+      </li>
+      <li class="act">
+        <a class="mosaico" href="palabras/" style="--t:#FFE14D" aria-label="Palabras con letras">
+          <span class="domo"></span>
+          <svg class="linea" viewBox="0 0 240 200" aria-hidden="true">
+            <rect x="14" y="62" width="64" height="64" rx="14"/><rect x="88" y="62" width="64" height="64" rx="14"/><rect x="162" y="62" width="64" height="64" rx="14"/>
+            <path d="M58 78 C52 70 34 70 32 80 C30 92 58 90 58 104 C58 116 36 118 30 108" class="sin"/>
+            <circle cx="120" cy="94" r="17" class="sin"/>
+            <path d="M184 76 V112 H208" class="sin"/>
+            <path d="M120 20 l6 12 13 2 -9 9 2 13 -12 -6 -12 6 2 -13 -9 -9 13 -2 z"/>
+            <circle cx="46" cy="160" r="9"/><circle cx="120" cy="160" r="9"/><circle cx="194" cy="160" r="9"/>
+          </svg>
+          <span class="banda" aria-hidden="true">Palabras</span>
+        </a>
+        <a class="ir" href="palabras/"><span class="q">P</span>alabras con letras →</a>
+        <p>Copia la palabra y cuenta sus letras.</p>
       </li>
       <li class="act">
         <a class="mosaico" href="riman/" style="--t:#56D9F0" aria-label="¿Riman o no riman?">
