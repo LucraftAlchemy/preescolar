@@ -58,6 +58,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
   box-shadow: 0 8px 0 var(--sh, #D9C7F5), inset 0 0 0 6px var(--c, #B79CF0); font-size: clamp(56px, min(10vw, 17vh), 132px); line-height: 1; display: grid; place-items: center;
   transition: transform .15s ease, background .2s ease; }
 .ficha:active { transform: translateY(4px); }
+.ficha .mayus { color: var(--rojo); }
+.ficha.cuenta .mayus { color: #FFFFFF; }
+.ficha.tapada .mayus { color: transparent; }
 .ficha.tapada { background: repeating-linear-gradient(-45deg, #FFFFFF 0 12px, #F6F1FF 12px 24px); color: transparent; }
 .ficha.tapada::after { content: "?"; color: var(--c); font-size: .6em; position: absolute; }
 .ficha.cuenta { background: var(--c); animation: salta .35s ease; }
@@ -191,7 +194,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
     $('#dibujo').innerHTML = `${i >= BASICAS ? '<span class="etq">Reto</span>' : ''}${svg(k)}`;
     $('#dibujo').setAttribute('aria-label', `${k}, toca para escuchar`);
     $('#letras').innerHTML = [...w].map((l, n) => { const [c, sh] = COLORES[n % COLORES.length];
-      return `<button class="ficha${tapada ? ' tapada' : ''}" type="button" data-n="${n}" style="--c:${c};--sh:${sh}" aria-label="${tapada ? 'letra tapada' : 'letra ' + NOMBRES[l]}">${l}</button>`; }).join('');
+      return `<button class="ficha${tapada ? ' tapada' : ''}" type="button" data-n="${n}" style="--c:${c};--sh:${sh}" aria-label="${tapada ? 'letra tapada' : 'letra ' + NOMBRES[l]}">${n === 0 ? `<span class="mayus">${l}</span>` : l.toLowerCase()}</button>`; }).join('');
     $('#resultado').innerHTML = '';
     $('#btnTapar').textContent = tapada ? 'Destapar' : 'Tapar letras';
   }
