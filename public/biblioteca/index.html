@@ -335,6 +335,28 @@ body { min-height: 100vh; background: transparent; }
 .tab:nth-child(4)[aria-selected="true"] { background: #FFCB80; border-color: #FFB347; }
 .nombre { background: #FFFFFF; }
 .nombre.con-libro { background: #FFF8E1; }
+/* Grupos de libros */
+:root, :root:not([data-theme="light"]), :root[data-theme="dark"] { --c0: #FF6B6B; --c1: #FFA94D; --c2: #FFD43B; --c3: #69DB7C; --c4: #F783AC; --c5: #4DABF7; --c6: #B197FC; }
+@media (prefers-color-scheme: dark) { :root, :root:not([data-theme="light"]), :root[data-theme="dark"] { --c0: #FF6B6B; --c1: #FFA94D; --c2: #FFD43B; --c3: #69DB7C; --c4: #F783AC; --c5: #4DABF7; --c6: #B197FC; } }
+.filtros { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; }
+.filtro { font: inherit; font-weight: 700; font-size: 16px; border: 3px solid var(--c, #CDB4FF); background: #fff; color: var(--ink); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.filtro[aria-pressed="true"] { background: var(--c, #CDB4FF); }
+.repisa { background: rgba(255, 255, 255, .78); border-radius: 22px; padding: 14px 16px 0; margin-bottom: 22px; box-shadow: var(--shadow); }
+.repisa h3 { display: flex; align-items: center; gap: 10px; margin: 0 0 12px; font-size: 22px; }
+.repisa h3 .bola { width: 22px; height: 22px; border-radius: 50%; background: var(--c); border: 3px solid rgba(0, 0, 0, .15); flex: none; }
+.repisa h3 small { font-size: 15px; color: var(--muted); font-weight: 600; }
+.lomos { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 12px; padding-bottom: 14px;
+  border-bottom: 12px solid var(--wood, #D9A873); box-shadow: 0 6px 0 var(--wood-dark, #B07D4A); margin: 0 -16px; padding-inline: 16px; }
+.libro-mini { position: relative; font: inherit; border: 0; padding: 0; background: none; cursor: pointer; text-align: center; }
+.libro-mini .libro { min-height: 150px; gap: 8px; padding: 10px 8px 8px; border-radius: 10px 14px 14px 10px; }
+.libro-mini .libro .ini { width: 50px; height: 50px; font-size: 30px; margin-top: 2px; }
+.libro-mini .libro .tit { font-size: 13.5px; padding: 6px 6px; }
+.libro-mini .en-casa { position: absolute; top: -6px; right: -4px; background: #FDE2E3; color: #B3261E; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 2px 8px; box-shadow: 0 2px 0 rgba(0,0,0,.1); }
+.libro-mini.fuera .libro { opacity: .55; }
+.libro-grande { display: grid; justify-items: center; gap: 12px; text-align: center; }
+.libro-grande .libro { width: min(250px, 70vw); min-height: 300px; }
+.libro-grande .grupo-chip { background: var(--c); border-radius: 999px; padding: 4px 14px; font-weight: 700; }
+.agregar-libro summary { cursor: pointer; font-weight: 700; color: var(--purple-ink); margin: 8px 0 12px; }
 </style>
 </head>
 <body>
@@ -384,6 +406,8 @@ body { min-height: 100vh; background: transparent; }
     <nav class="tabs" role="tablist" aria-label="Secciones de la biblioteca">
       <button class="tab" role="tab" id="t-prestamos" data-v="prestamos" aria-selected="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6c3-1.6 6-1.6 9 0v13c-3-1.6-6-1.6-9 0z"/><path d="M21 6c-3-1.6-6-1.6-9 0v13c3-1.6 6-1.6 9 0z"/></svg>Préstamos</button>
+      <button class="tab" role="tab" id="t-libros" data-v="libros" aria-selected="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h4v16H4zM10 4h4v16h-4zM16.5 4.6l3.7 1-3.9 14.5-3.7-1"/></svg>Libros</button>
       <button class="tab" role="tab" id="t-registro" data-v="registro" aria-selected="false">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M9 3.5v2h6v-2M8.5 10h7M8.5 14h7M8.5 18h4"/></svg>Registro</button>
       <button class="tab" role="tab" id="t-reglamento" data-v="reglamento" aria-selected="false">
@@ -406,15 +430,17 @@ body { min-height: 100vh; background: transparent; }
   <!-- LIBROS -->
   <section class="vista" id="v-libros" role="tabpanel" aria-labelledby="t-libros" hidden>
     <div class="cab-vista"><h2>Nuestros libros</h2><p id="resLibros"></p></div>
+    <div class="filtros" id="filtrosLibros"></div>
+    <div id="gridLibros"></div>
+    <details class="agregar-libro"><summary>Agregar un libro nuevo</summary>
     <form class="tarjeta form-libro" id="formLibro" autocomplete="off">
       <div>
-        <label class="etq" for="inTitulo">Agregar un libro del rincón</label>
+        <label class="etq" for="inTitulo">Título del libro</label>
         <div class="fila"><input type="text" id="inTitulo" maxlength="80" placeholder="Escribe el título del libro" required>
           <button class="btn principal" type="submit">Agregar libro</button></div>
       </div>
-      <fieldset class="colores" id="colores"><legend>Color de la portada</legend></fieldset>
-    </form>
-    <div class="estante" id="gridLibros"></div>
+      <fieldset class="colores" id="colores"><legend>Grupo</legend></fieldset>
+    </form></details>
   </section>
 
   <!-- REGISTRO -->
@@ -642,7 +668,7 @@ body { min-height: 100vh; background: transparent; }
       return `<div class="libro librito ${extraClase}" style="--c:${color(l.color)}"><span class="serie">${esc(l.titulo || 'Mi nombre cuenta una historia')}</span>
         <span class="autor"><small>Librito de</small>${rojas(l.autor || '')}</span></div>`;
     }
-    const t = String(l.titulo || '').trim(), ini = t ? t[0].toUpperCase() : '?';
+    const t = String(l.titulo || '').trim(), ini = ((t.match(/[\p{L}\p{N}]/u) || ['?'])[0]).toUpperCase();
     return `<div class="libro ${extraClase}" style="--c:${color(l.color)}"><span class="ini"><span class="cap">${esc(ini)}</span></span><span class="tit">${esc(t)}</span></div>`;
   }
   const nombreLibro = (l) => (l ? (l.tipo === 'librito' ? `Librito de ${l.autor}` : l.titulo) : '');
@@ -659,7 +685,7 @@ body { min-height: 100vh; background: transparent; }
     if (f.paso === 'elegir') {
       const libres = S.libros.filter((l) => !prestamoDeLibro(l.id)).sort(ordenLibros);
       P.innerHTML = `${btnCerrar}<div class="saludo">Hola, ${rojas(n)}<small>Elige el libro que te quieres llevar.</small></div>
-        ${libres.length ? `<div class="estante">${libres.map((l) => `<button class="libro-btn" type="button" data-libro="${esc(l.id)}" aria-label="${esc(nombreLibro(l))}">${portada(l)}</button>`).join('')}</div>`
+        ${libres.length ? repisas(libres, (l) => `<button class="libro-mini" type="button" data-libro="${esc(l.id)}" aria-label="${esc(nombreLibro(l))}">${portada(l)}</button>`)
           : vacio('Todavía no hay libros en la lista. Escribe abajo el título del libro que se va a llevar.')}
         <form class="tarjeta" id="formRapido" autocomplete="off"><label class="etq" for="inRapido">¿No está el libro? Escribe su título y préstalo de una vez.</label>
           <div class="fila"><input type="text" id="inRapido" maxlength="80" placeholder="Título del libro" required><button class="btn principal" type="submit" ${S.soloLectura ? 'disabled' : ''}>Agregar y prestar</button></div></form>`;
@@ -715,23 +741,36 @@ body { min-height: 100vh; background: transparent; }
     const f = S.flujo; if (f) { f.paso = 'sello'; f.tipo = 'devuelto'; f.titulo = p.titulo; f.limite = lim; f.retraso = ret; pintarFlujo(); }
   }
 
-  // ---------- libros ----------
+  // ---------- grupos y catálogo del salón ----------
+  const GRUPOS = [["Cuentos clásicos", "#FF6B6B"], ["Fábulas", "#FFA94D"], ["Personajes de películas", "#FFD43B"], ["Cuentos para imaginar", "#69DB7C"], ["Yo, mi familia y mis emociones", "#F783AC"], ["Para aprender", "#4DABF7"], ["Juegos, adivinanzas e inglés", "#B197FC"]];
+  const CATALOGO = [[0, "Caperucita Roja", 2], [0, "Hansel y Gretel", 1], [0, "La casita de chocolate", 1], [0, "El patito feo", 1], [0, "Pulgarcito", 2], [0, "Blancanieves", 1], [0, "Pinocho", 1], [0, "Peter Pan", 3], [0, "Alicia en el país de las maravillas", 4], [0, "Cuentos clásicos", 1], [0, "Álbum de oro", 1], [0, "Tesoro infantil", 1], [1, "El cuervo y el zorro", 1], [1, "La asamblea de los ratones", 1], [1, "Liz, el coyote hambriento", 1], [1, "Los envidiosos", 1], [1, "Fábulas de oro", 1], [2, "Frozen", 1], [2, "La sirenita", 2], [2, "La bella y la bestia", 2], [2, "Aladino", 2], [2, "Bambi", 1], [2, "102 dálmatas", 1], [2, "Valiente", 1], [2, "Thor", 1], [2, "Pocoyó", 1], [2, "Doctora Juguetes", 1], [3, "Cuentos fantásticos", 1], [3, "Cuentos de fantasía", 1], [3, "Hola, unicornio", 1], [3, "La princesa del agua", 1], [3, "Camino de plata", 1], [3, "Anabel y el monstruo del lago Ness", 1], [3, "El misterioso caso del mono peligroso", 3], [3, "Cómo reconocer a un monstruo", 1], [3, "Los monstruos y tú", 1], [3, "Bienvenidos a Gruñón Hollis", 1], [3, "Con la cabeza en las nubes", 1], [3, "Historias, aventuras y algo más", 1], [3, "Pequeño rescate", 1], [3, "El pequeño gran héroe", 1], [3, "Detrás del muro", 1], [3, "¿Quién viene? ¡El lobo!", 1], [3, "Cuento al revés", 1], [3, "Don Crispín", 1], [3, "Eso", 1], [3, "El rastrero", 1], [3, "La comparsa de los animales", 1], [3, "Marta y la bicicleta", 1], [3, "¿Dónde está la ranita?", 1], [3, "¿Dónde está mi pelota?", 1], [3, "Nicolás en su cumpleaños", 1], [3, "Rafa cuenta una historia", 1], [3, "Iván, la increíble historia del gorila del centro comercial", 1], [3, "Historia de un albatros", 1], [3, "Río por mil años", 1], [3, "Arrullo", 1], [3, "Ojalá", 1], [3, "Empujar", 1], [3, "Pero veo en el aire", 1], [3, "¿Escuchaste esto?", 1], [4, "El libro de las familias", 1], [4, "Hermanos", 1], [4, "Iguales pero diferentes", 1], [4, "Soy grande, soy pequeño", 1], [4, "Soy un oso", 1], [4, "Cosas que me gustan", 1], [4, "Los modales", 1], [4, "Los niños expresan valores", 1], [4, "De corazón", 1], [4, "Yo miro todo el tiempo", 1], [4, "Antes de mí", 2], [4, "Se me ha caído un diente", 1], [4, "Yo amo las bibliotecas", 1], [4, "La mitad del universo", 1], [5, "¿Cómo se forman las nubes?", 1], [5, "El cerebro y el sistema nervioso", 1], [5, "El corazón y el sistema nervioso", 1], [5, "Planetas a la vista", 1], [5, "Alimentación correcta", 1], [5, "Delfines", 1], [5, "Los cinco sentidos", 1], [5, "La ciencia", 1], [5, "En la selva", 1], [5, "Suena a México", 1], [5, "Mi mano es una regla", 1], [5, "El mundo está lleno de colores", 1], [5, "El sonido de los colores", 1], [5, "Los colores de él", 1], [5, "Libro informativo", 1], [5, "El de asma", 1], [6, "Adivina adivinador", 2], [6, "Origami", 2], [6, "Papiroflexia", 1], [6, "Un sombrero mariposa", 1], [6, "Finger Phonics", 2], [6, "Brillante", 2]];
+  const grupoDe = (l) => (Number.isInteger(l.grupo) ? l.grupo : Number(l.color) || 0);
+  function sembrarCatalogo() {
+    if (datos.docs['ajustes/catalogo']) return;
+    const ya = new Map(); Object.values(datos.cols.libros).forEach((l) => { const k = String(l.titulo).toLowerCase(); ya.set(k, (ya.get(k) || 0) + 1); });
+    CATALOGO.forEach(([g, t, n]) => { const falta = n - (ya.get(t.toLowerCase()) || 0);
+      for (let k = 0; k < falta; k++) datos.cols.libros[nuevoId()] = { titulo: t, color: g, grupo: g, tipo: 'cuento', autor: '', alta: new Date().toISOString() }; });
+    datos.docs['ajustes/catalogo'] = { version: 1, libros: 114 }; guardarLocal();
+  }
+  let filtroGrupo = store.get('biblio-filtro') ?? 'todos';
+  function repisas(libros, hacer) {
+    return GRUPOS.map(([nombre], g) => { const ls = libros.filter((l) => grupoDe(l) === g); if (!ls.length) return '';
+      return `<section class="repisa" style="--c:${color(g)}"><h3><span class="bola"></span>${esc(nombre)} <small>${ls.length}</small></h3><div class="lomos">${ls.map(hacer).join('')}</div></section>`; }).join('');
+  }
   function renderLibros() {
     const libros = [...S.libros].sort(ordenLibros), fuera = activos().length;
-    $('#resLibros').textContent = S.libros.length ? `${S.libros.length} libros · ${fuera} en casa de alguien` : '';
-    const el = $('#gridLibros');
-    if (!S.libros.length) { el.innerHTML = vacio(S.estado === 'ok' ? 'Todavía no hay libros. Escribe el título del primero arriba.' : 'Aquí aparecerán los libros del rincón.'); return; }
-    el.innerHTML = libros.map((l) => {
-      const p = prestamoDeLibro(l.id);
-      const est = p ? `<span class="estado fuera">Lo tiene ${esc(p.nino)} · ${esc(txtDias(dias(p.salida)))}</span>` : '<span class="estado libre">Disponible</span>';
-      const quitar = S.soloLectura ? '' : (S.confirmaQuitar === l.id
-        ? `<span class="confirma">¿Quitarlo? <button class="si" type="button" data-quitar-si="${esc(l.id)}">Sí, quitar</button><button type="button" data-quitar-no>No</button></span>`
-        : `<button class="quitar" type="button" data-quitar="${esc(l.id)}" aria-label="Quitar ${esc(nombreLibro(l))}" title="Quitar libro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v6M14 11v6"/></svg></button>`);
-      return `<div class="item-libro">${portada(l)}<div class="pie">${est}${p ? '' : quitar}</div></div>`;
-    }).join('');
+    $('#resLibros').textContent = S.libros.length ? `${S.libros.length} libros · ${fuera} en casa · Toca un libro para escuchar su nombre.` : '';
+    $('#filtrosLibros').innerHTML = `<button class="filtro" type="button" data-filtro="todos" aria-pressed="${filtroGrupo === 'todos'}">Todos</button>` +
+      GRUPOS.map(([n], g) => `<button class="filtro" type="button" data-filtro="${g}" style="--c:${color(g)}" aria-pressed="${String(filtroGrupo) === String(g)}">${esc(n)}</button>`).join('');
+    const vis = filtroGrupo === 'todos' ? libros : libros.filter((l) => String(grupoDe(l)) === String(filtroGrupo));
+    $('#gridLibros').innerHTML = vis.length ? repisas(vis, (l) => { const p = prestamoDeLibro(l.id);
+      return `<button class="libro-mini${p ? ' fuera' : ''}" type="button" data-ver-libro="${esc(l.id)}" aria-label="${esc(nombreLibro(l))}${p ? ', está en casa' : ''}">${portada(l)}${p ? '<span class="en-casa">En casa</span>' : ''}</button>`; })
+      : vacio('Todavía no hay libros en este grupo.');
   }
   function pintarColores() {
-    $('#colores').insertAdjacentHTML('beforeend', [0, 1, 2, 3, 4, 5, 6].map((i) => `<label style="--c:${color(i)}" title="Color ${i + 1}"><input type="radio" name="color" value="${i}" id="col${i}" ${i === 0 ? 'checked' : ''}><span></span><span class="sr">Color ${i + 1}</span></label>`).join(''));
+    $('#colores').insertAdjacentHTML('beforeend', GRUPOS.map(([n], i) => `<label style="--c:${color(i)}" title="${esc(n)}"><input type="radio" name="color" value="${i}" id="col${i}" ${i === 0 ? 'checked' : ''}><span></span><span class="sr">${esc(n)}</span></label>`).join('')
+      + `<p class="nota" id="grupoElegido">${esc(GRUPOS[0][0])}</p>`);
+    $('#colores').addEventListener('change', () => { const i = Number(($('#colores input:checked') || {}).value || 0); $('#grupoElegido').textContent = GRUPOS[i][0]; });
   }
 
   // ---------- registro ----------
@@ -906,7 +945,7 @@ body { min-height: 100vh; background: transparent; }
 
   // ---------- vistas ----------
   function irA(v) {
-    if (!['prestamos', 'registro', 'reglamento', 'ajustes'].includes(v)) v = 'prestamos';
+    if (!['prestamos', 'libros', 'registro', 'reglamento', 'ajustes'].includes(v)) v = 'prestamos';
     S.vista = v; store.set('biblio-vista', v);
     $$('.tab').forEach((t) => t.setAttribute('aria-selected', String(t.dataset.v === v)));
     $$('.vista[role="tabpanel"]').forEach((s) => { s.hidden = s.id !== 'v-' + v; });
@@ -957,7 +996,7 @@ body { min-height: 100vh; background: transparent; }
     const titulo = $('#inTitulo').value.trim().replace(/\s+/g, ' '); if (!titulo) return;
     const col = Number(($('#colores input:checked') || {}).value || 0);
     const btn = $('#formLibro button[type="submit"]'); btn.disabled = true;
-    const ok = await escribir((db) => db.collection('libros').add({ titulo, color: col, tipo: 'cuento', autor: '', alta: new Date().toISOString() }));
+    const ok = await escribir((db) => db.collection('libros').add({ titulo, color: col, grupo: col, tipo: 'cuento', autor: '', alta: new Date().toISOString() }));
     btn.disabled = false;
     if (ok) { $('#inTitulo').value = ''; avisar(`Agregaste «${titulo}».`); const sig = $(`#col${(col + 1) % 7}`); if (sig) sig.checked = true; }
   });
@@ -980,7 +1019,7 @@ body { min-height: 100vh; background: transparent; }
     if (prestamoDe(f.nino)) { avisar(`${f.nino} ya tiene un libro en casa.`); return; }
     const col = S.libros.length % 7; let ref = null;
     S.agregando = true; const btn = e.target.querySelector('button'); if (btn) btn.disabled = true;
-    const ok1 = await escribir(async (db) => { ref = ref || await db.collection('libros').add({ titulo, color: col, tipo: 'cuento', autor: '', alta: new Date().toISOString() }); });
+    const ok1 = await escribir(async (db) => { ref = ref || await db.collection('libros').add({ titulo, color: col, grupo: col, tipo: 'cuento', autor: '', alta: new Date().toISOString() }); });
     const ok2 = ok1 && ref && await escribir((db) => db.collection('prestamos').add({ nino: f.nino, libroId: ref.id, titulo, color: col, tipo: 'cuento', autor: '', salida: new Date().toISOString(), limite: fechaLimite(new Date().toISOString()), regreso: null }));
     S.agregando = false;
     if (!ok2) { if (btn) btn.disabled = false; if (ok1) { $('#inRapido').value = ''; pintarFlujo(); avisar('El libro ya quedó en la lista; tócalo para prestarlo.'); } return; }
@@ -1043,7 +1082,7 @@ body { min-height: 100vh; background: transparent; }
   };
   window.addEventListener('storage', (e) => { if (e.key === CLAVE) { datos = leerLocal(); oyentes.forEach((f) => f()); } });
   function conectar() {
-    S.db = dbLocal; S.estado = 'ok';
+    S.db = dbLocal; S.estado = 'ok'; sembrarCatalogo();
     dbLocal.doc('ajustes/biblioteca').onSnapshot((s) => { S.ajustes = s.exists ? s.data() : null; renderTodo(); });
     dbLocal.collection('libros').onSnapshot((q) => { S.libros = q.docs.map((d) => ({ id: d.id, ...d.data() })); renderTodo(); });
     dbLocal.collection('prestamos').onSnapshot((q) => { S.prestamos = q.docs.map((d) => ({ id: d.id, ...d.data() })); renderTodo(); });
@@ -1121,6 +1160,18 @@ body { min-height: 100vh; background: transparent; }
   $('#btnVoz').addEventListener('click', () => { voz = !voz; store.set('biblio-voz', voz ? 'si' : 'no'); pintarVoz(); if (voz) hablar('Voz encendida.'); else try { speechSynthesis.cancel(); } catch {} });
   try { speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices(); } catch {}
   pintarVoz();
+  function verLibro(id) {
+    const l = libroPorId(id); if (!l) return; const p = prestamoDeLibro(id), g = grupoDe(l);
+    S.flujo = null; const P = $('#panel');
+    P.innerHTML = `${btnCerrar}<div class="libro-grande" style="--c:${color(g)}">${portada(l)}<span class="grupo-chip">${esc(GRUPOS[g] ? GRUPOS[g][0] : '')}</span>
+      <p class="detalle">${p ? 'Este libro está en casa de un compañero.' : 'Este libro está en la biblioteca.'}</p></div>`;
+    const t = `${nombreLibro(l)}. ${p ? 'Está en casa de un compañero.' : 'Está en la biblioteca.'}`;
+    botonVoz(t); abrirCapa(); hablar(t);
+  }
+  document.addEventListener('click', (e) => {
+    const v = e.target.closest('[data-ver-libro]'); if (v) { audio(); verLibro(v.dataset.verLibro); return; }
+    const f = e.target.closest('[data-filtro]'); if (f) { filtroGrupo = f.dataset.filtro; store.set('biblio-filtro', filtroGrupo); renderLibros(); }
+  });
 
   pintarColores(); pintarReglas(); pintarReloj();
   irA(store.get('biblio-vista') || 'prestamos');
