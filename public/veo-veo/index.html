@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Veo, veo con sonidos</title>
+<meta name="description" content="Para proyectar en preescolar: escuchan un sonido y encuentran el dibujo que empieza así.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Preescolar">
+<meta property="og:locale" content="es_MX">
+<meta property="og:title" content="Veo, veo con sonidos">
+<meta property="og:description" content="Para proyectar en preescolar: escuchan un sonido y encuentran el dibujo que empieza así.">
+<meta property="og:url" content="https://preescolar.lucraft.com.mx/veo-veo/">
+<meta property="og:image" content="https://preescolar.lucraft.com.mx/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#FFF8E1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='6' width='52' height='52' rx='14' fill='%2356D9F0'/%3E%3Ctext x='32' y='45' font-size='36' text-anchor='middle' font-family='sans-serif' font-weight='700' fill='%23E1262D'%3EV%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mali:wght@600;700&display=swap">
+<style>
+:root {
+  --bg: #FFF8E1; --tarjeta: #FFFFFF; --tinta: #2E2350; --borde: #FFD54A; --borde-osc: #C98A00; --rojo: #E1262D;
+  --lila-osc: #6B45C6; --sombra: 0 6px 0 #F3DC8E;
+  --f: "Mali", "Comic Sans MS", "Chalkboard SE", system-ui, sans-serif; color-scheme: light;
+}
+html, body { height: 100%; margin: 0; }
+[hidden] { display: none !important; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--tinta); font-family: var(--f); font-weight: 700; overflow-x: hidden; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 4px solid var(--lila-osc); outline-offset: 4px; }
+.app { min-height: 100%; height: 100%; display: flex; flex-direction: column; gap: clamp(8px, 1.6vh, 18px);
+  padding-block: clamp(10px, 2vh, 22px); padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px)); }
+.cab { display: flex; align-items: center; justify-content: space-between; gap: 10px 16px; flex-wrap: wrap; }
+.cab h1 { margin: 0; font-size: clamp(26px, 4.2vh, 46px); line-height: 1.05; background: var(--tarjeta); border: 4px solid var(--borde); border-radius: 999px; padding: 6px 26px 10px; box-shadow: var(--sombra); }
+.q { color: var(--rojo); }
+.puntos { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.punto { width: 18px; height: 18px; border-radius: 50%; background: var(--tarjeta); border: 3px solid var(--borde); }
+.punto.hecho { background: var(--borde); }
+.punto.actual { background: #FF8FA3; border-color: #E0526E; transform: scale(1.25); }
+.punto.reto { border-radius: 4px; }
+.punto.estrella { border-radius: 4px; transform: rotate(45deg); }
+.iconos { display: flex; gap: 10px; }
+.icono { width: 52px; height: 52px; border-radius: 16px; border: 4px solid var(--borde); background: var(--tarjeta); display: grid; place-items: center; box-shadow: var(--sombra); color: inherit; text-decoration: none; }
+.icono svg { width: 24px; height: 24px; }
+
+.escena { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(10px, 2.5vw, 34px); align-items: center; }
+.dibujo { background: var(--tarjeta); border: 6px solid var(--borde); border-radius: 36px; box-shadow: var(--sombra); height: 100%; max-height: 100%; min-height: 0;
+  display: grid; place-items: center; padding: clamp(8px, 2vh, 22px); position: relative; }
+.dibujo svg { width: min(100%, 52vh); height: auto; aspect-ratio: 1; }
+.dibujo .etq { position: absolute; top: 12px; left: 16px; font-size: clamp(14px, 2vh, 18px); background: #FFE0E6; color: #B3261E; border-radius: 999px; padding: 2px 12px; }
+.lado { display: flex; flex-direction: column; align-items: center; gap: clamp(10px, 2.4vh, 26px); min-width: 0; }
+.letras { display: flex; gap: clamp(8px, 1.6vw, 20px); justify-content: center; flex-wrap: wrap; }
+.ficha { position: relative; width: clamp(78px, min(13vw, 22vh), 170px); aspect-ratio: 1; border-radius: 22px; border: 0; background: var(--tarjeta);
+  box-shadow: 0 8px 0 var(--sh, #D9C7F5), inset 0 0 0 6px var(--c, #B79CF0); font-size: clamp(56px, min(10vw, 17vh), 132px); line-height: 1; display: grid; place-items: center;
+  transition: transform .15s ease, background .2s ease; }
+.ficha:active { transform: translateY(4px); }
+.ficha .mayus { color: var(--rojo); }
+.ficha.cuenta .mayus { color: #FFFFFF; }
+.ficha.tapada .mayus { color: transparent; }
+.ficha.tapada { background: repeating-linear-gradient(-45deg, #FFFFFF 0 12px, #F6F1FF 12px 24px); color: transparent; }
+.ficha.tapada::after { content: "?"; color: var(--c); font-size: .6em; position: absolute; }
+.ficha.cuenta { background: var(--c); animation: salta .35s ease; }
+.ficha .num { position: absolute; bottom: -46px; left: 50%; transform: translateX(-50%); font-size: clamp(22px, 3.6vh, 34px); width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--tinta); color: #FFF; display: grid; place-items: center; }
+@keyframes salta { 40% { transform: translateY(-14px) scale(1.06); } }
+.resultado { min-height: clamp(54px, 9vh, 90px); margin-top: 30px; font-size: clamp(26px, 5vh, 52px); text-align: center; }
+.resultado .n { display: inline-grid; place-items: center; width: 1.5em; height: 1.5em; border-radius: 50%; background: var(--rojo); color: #FFF; margin-inline: 6px; }
+
+.pie { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.btn { border: 0; border-radius: 26px; padding: 12px 26px 16px; font-size: clamp(20px, 3.4vh, 34px); box-shadow: 0 6px 0 rgba(0, 0, 0, .18); display: inline-flex; align-items: center; gap: 10px; }
+.btn:active { transform: translateY(3px); box-shadow: 0 3px 0 rgba(0, 0, 0, .18); }
+.btn svg { width: 1em; height: 1em; }
+.btn.amarillo { background: #FFD54A; }
+.btn.rosa { background: #FF8FA3; }
+.btn.verde { background: #8EE3B0; }
+.btn.sig { background: var(--lila-osc); color: #FFF; }
+.btn.chico { background: var(--tarjeta); border: 4px solid var(--borde); box-shadow: var(--sombra); font-size: clamp(16px, 2.4vh, 22px); padding: 10px 18px 12px; }
+
+.final { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(8px, 2vh, 20px); text-align: center; }
+.final .todas { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.final .todas svg { width: clamp(70px, 12vh, 120px); height: auto; background: #FFF; border-radius: 20px; border: 4px solid var(--borde); }
+.final h2 { margin: 0; font-size: clamp(30px, 6vh, 60px); line-height: 1.1; }
+.reloj { font-size: clamp(30px, 6vh, 60px); font-variant-numeric: tabular-nums; min-width: 4ch; }
+.fila { display: flex; gap: 14px; align-items: center; justify-content: center; flex-wrap: wrap; }
+
+.escena { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); }
+.pista { min-width: 0; display: flex; flex-direction: column; gap: clamp(10px, 2vh, 20px); align-items: stretch; }
+.globo { position: relative; background: var(--tarjeta); border: 6px solid #56D9F0; border-radius: 40px; box-shadow: 0 6px 0 #A9E9F5; padding: clamp(14px, 3vh, 30px) 20px;
+  display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
+.globo .ojo { font-size: clamp(34px, 7vh, 64px); line-height: 1; }
+.globo .veo { font-size: clamp(20px, 3.6vh, 34px); }
+.globo .son { font-size: clamp(54px, 13vh, 120px); line-height: 1.05; color: var(--lila-osc); letter-spacing: .04em; }
+.globo.habla .son { animation: latido 1s ease infinite; }
+@keyframes latido { 50% { transform: scale(1.08); } }
+.respuesta { min-height: clamp(80px, 16vh, 150px); display: grid; place-items: center; text-align: center; font-size: clamp(22px, 4vh, 40px); }
+.respuesta .grande { font-size: clamp(48px, 10vh, 96px); line-height: 1; }
+.respuesta .letra { display: inline-grid; place-items: center; width: 1.3em; height: 1.3em; border-radius: 18px; background: var(--rojo); color: #FFF; margin-right: 10px; font-size: .9em; vertical-align: middle; }
+.respuesta .mas { display: block; font-size: clamp(16px, 2.6vh, 24px); margin-top: 6px; color: #5B4C86; }
+.opciones { min-width: 0; display: grid; grid-template-columns: 1fr 1fr; gap: clamp(10px, 2vh, 20px); height: 100%; min-height: 0; align-content: center; }
+.op { background: var(--tarjeta); border: 6px solid var(--borde); border-radius: 30px; box-shadow: var(--sombra); padding: clamp(6px, 1.4vh, 14px); display: grid; place-items: center; min-height: 0; }
+.op svg { width: min(100%, 27vh); height: auto; aspect-ratio: 1; }
+.op.bien { border-color: #2FB673; background: #E7FAEF; box-shadow: 0 6px 0 #9BDDB8; animation: salta .45s ease; }
+.op.mal { animation: no .4s ease; border-color: #FF8FA3; }
+.op.apagada { opacity: .35; }
+@keyframes no { 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
+@keyframes salta { 40% { transform: translateY(-14px) scale(1.04); } }
+@media (max-width: 700px) {
+  .app { height: auto; }
+  .escena { grid-template-columns: 1fr; align-items: start; flex: none; }
+  .opciones { height: auto; }
+  .globo .son { font-size: 17vw; }
+  .globo .veo { font-size: 18px; }
+  .respuesta { min-height: 70px; }
+  .op svg { width: 100%; }
+  .dibujo svg { width: min(70vw, 34vh); }
+  .ficha { width: 21vw; font-size: 15vw; border-radius: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .ficha, .ficha.cuenta { animation: none; transition: none; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="cab">
+    <h1><span class="q">V</span>eo, veo con sonidos</h1>
+    <div class="puntos" id="puntos" aria-label="Avance"></div>
+    <div class="iconos">
+      <a class="icono" href="../" aria-label="Todas las actividades" title="Todas las actividades">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg>
+      </a>
+      <button class="icono" id="btnPantalla" type="button" aria-label="Pantalla completa" title="Pantalla completa">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="escena" id="escena">
+    <div class="pista">
+      <button class="globo" id="globo" type="button" aria-label="Escuchar otra vez">
+        <span class="ojo" aria-hidden="true">👀</span>
+        <span class="veo">Veo, veo algo que empieza con…</span>
+        <span class="son" id="son"></span>
+      </button>
+      <div class="respuesta" id="respuesta" aria-live="polite"></div>
+    </div>
+    <div class="opciones" id="opciones"></div>
+  </main>
+
+  <section class="final" id="final" hidden>
+    <div class="todas" id="todas"></div>
+    <h2>¡<span class="q">M</span>uy bien! Ahora dos niños<br>explican su objeto.</h2>
+    <div class="fila">
+      <button class="btn amarillo" id="btnMinuto" type="button">1 minuto</button>
+      <div class="reloj" id="reloj" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <footer class="pie" id="pie">
+    <button class="btn chico" id="btnAtras" type="button">Anterior</button>
+    <button class="btn amarillo" id="btnOir" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9a4 4 0 0 1 0 6"/></svg>Otra vez</button>
+    <button class="btn sig" id="btnSig" type="button">Siguiente</button>
+  </footer>
+</div>
+
+<script>
+(() => {
+  'use strict';
+  const RONDAS = [["mesa", "mmm…", "mmmmmm", "M", ["sol", "gato", "pato"], false], ["sol", "sss…", "sssssss", "S", ["casa", "pan", "hueso"], false], ["luna", "lll…", "lllllll", "L", ["gato", "queso", "mesa"], false], ["oso", "ooo…", "oooooo", "O", ["pan", "col", "casa"], false], ["pato", "pa, pa…", "pa, pa, pa", "P", ["sol", "luna", "oso"], true], ["gato", "ga, ga…", "ga, ga, ga", "G", ["mesa", "hueso", "col"], true]], DIBUJOS = {"casa": "<rect x=\"128\" y=\"34\" width=\"20\" height=\"44\" fill=\"#C9483E\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><rect x=\"44\" y=\"92\" width=\"112\" height=\"92\" fill=\"#FFE7C2\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M26 100 L100 34 L174 100 Z\" fill=\"#E85A4F\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><rect x=\"88\" y=\"128\" width=\"28\" height=\"56\" rx=\"5\" fill=\"#A0663A\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"109\" cy=\"158\" r=\"3\" fill=\"#3A2A5C\"/><rect x=\"54\" y=\"112\" width=\"26\" height=\"24\" rx=\"3\" fill=\"#9FD3F5\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M67 112 v24 M54 124 h26\" stroke=\"#3A2A5C\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><rect x=\"124\" y=\"112\" width=\"26\" height=\"24\" rx=\"3\" fill=\"#9FD3F5\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M137 112 v24 M124 124 h26\" stroke=\"#3A2A5C\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"30\" cy=\"176\" r=\"16\" fill=\"#7CC85A\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"170\" cy=\"176\" r=\"16\" fill=\"#7CC85A\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M10 190 h180\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>", "col": "<path d=\"M30 120 C10 92 30 54 62 60 C70 30 130 30 138 60 C170 54 190 92 170 120 C186 160 150 192 100 188 C50 192 14 160 30 120 Z\" fill=\"#7CC85A\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M48 128 C40 100 60 76 86 82 C96 62 124 66 128 88 C150 88 164 112 152 134 C150 160 124 172 100 168 C72 172 50 156 48 128 Z\" fill=\"#A6DD7E\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M74 132 C70 112 86 98 102 104 C120 100 134 116 128 134 C124 150 110 156 100 154 C86 156 76 146 74 132 Z\" fill=\"#CBEDA9\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M100 154 L100 112 M100 132 L84 116 M100 132 L116 116 M62 112 L44 96 M138 112 L156 96 M100 82 L100 58\" fill=\"none\" stroke=\"#5FA83E\" stroke-width=\"4\" stroke-linecap=\"round\"/>", "gato": "<path d=\"M148 168 C190 160 196 112 170 102\" fill=\"none\" stroke=\"#3A2A5C\" stroke-width=\"20\" stroke-linecap=\"round\"/><path d=\"M148 168 C190 160 196 112 170 102\" fill=\"none\" stroke=\"#BAC4D8\" stroke-width=\"10\" stroke-linecap=\"round\"/><ellipse cx=\"100\" cy=\"150\" rx=\"50\" ry=\"40\" fill=\"#BAC4D8\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><ellipse cx=\"100\" cy=\"160\" rx=\"27\" ry=\"27\" fill=\"#E9EEF7\"/><path d=\"M58 66 L64 16 L98 44 Z\" fill=\"#BAC4D8\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M142 66 L136 16 L102 44 Z\" fill=\"#BAC4D8\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M66 54 L70 30 L86 44 Z\" fill=\"#F7B5C8\"/><path d=\"M134 54 L130 30 L114 44 Z\" fill=\"#F7B5C8\"/><circle cx=\"100\" cy=\"84\" r=\"46\" fill=\"#BAC4D8\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><ellipse cx=\"100\" cy=\"102\" rx=\"22\" ry=\"15\" fill=\"#E9EEF7\"/><circle cx=\"82\" cy=\"80\" r=\"7\" fill=\"#3A2A5C\"/><circle cx=\"118\" cy=\"80\" r=\"7\" fill=\"#3A2A5C\"/><circle cx=\"84\" cy=\"77\" r=\"2.4\" fill=\"#FFF\"/><circle cx=\"120\" cy=\"77\" r=\"2.4\" fill=\"#FFF\"/><path d=\"M95 94 L105 94 L100 100 Z\" fill=\"#F28CB1\" stroke=\"#3A2A5C\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M92 105 q8 8 8 0 q0 8 8 0\" fill=\"none\" stroke=\"#3A2A5C\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M74 98 L44 92 M74 106 L46 110 M126 98 L156 92 M126 106 L154 110\" fill=\"none\" stroke=\"#3A2A5C\" stroke-width=\"3.5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><ellipse cx=\"82\" cy=\"186\" rx=\"14\" ry=\"9\" fill=\"#E9EEF7\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><ellipse cx=\"118\" cy=\"186\" rx=\"14\" ry=\"9\" fill=\"#E9EEF7\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>", "hueso": "<g transform=\"rotate(-22 100 100)\"><g fill=\"#3A2A5C\" stroke=\"#3A2A5C\" stroke-width=\"12\" stroke-linejoin=\"round\"><rect x=\"52\" y=\"86\" width=\"96\" height=\"28\" rx=\"10\"/><circle cx=\"46\" cy=\"84\" r=\"20\"/><circle cx=\"46\" cy=\"116\" r=\"20\"/><circle cx=\"154\" cy=\"84\" r=\"20\"/><circle cx=\"154\" cy=\"116\" r=\"20\"/><\/g><g fill=\"#FFF6DF\"><rect x=\"52\" y=\"86\" width=\"96\" height=\"28\" rx=\"10\"/><circle cx=\"46\" cy=\"84\" r=\"20\"/><circle cx=\"46\" cy=\"116\" r=\"20\"/><circle cx=\"154\" cy=\"84\" r=\"20\"/><circle cx=\"154\" cy=\"116\" r=\"20\"/><\/g><\/g>", "luna": "<path d=\"M122 28 C76 34 46 72 50 116 C54 160 96 186 138 176 C110 164 92 136 94 102 C96 70 112 44 122 28 Z\" fill=\"#FFE27A\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"86\" cy=\"96\" r=\"6\" fill=\"#3A2A5C\"/><path d=\"M78 126 q10 10 22 2\" fill=\"none\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linecap=\"round\"/><circle cx=\"72\" cy=\"114\" r=\"7\" fill=\"#F7A9B8\" opacity=\".75\"/><path d=\"M156 52 l5 10 11 2 -8 8 2 11 -10 -5 -10 5 2 -11 -8 -8 11 -2 z\" fill=\"#FFE27A\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M168 120 l3 7 8 1 -6 5 2 8 -7 -4 -7 4 2 -8 -6 -5 8 -1 z\" fill=\"#FFE27A\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>", "mesa": "<rect x=\"58\" y=\"102\" width=\"12\" height=\"54\" rx=\"4\" fill=\"#9A6332\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><rect x=\"130\" y=\"102\" width=\"12\" height=\"54\" rx=\"4\" fill=\"#9A6332\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M30 74 L170 74 L186 94 L14 94 Z\" fill=\"#E0A96D\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><rect x=\"14\" y=\"94\" width=\"172\" height=\"18\" rx=\"4\" fill=\"#C98B4B\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><rect x=\"24\" y=\"110\" width=\"16\" height=\"76\" rx=\"5\" fill=\"#B47A41\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><rect x=\"160\" y=\"110\" width=\"16\" height=\"76\" rx=\"5\" fill=\"#B47A41\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M70 84 h60\" stroke=\"#F3CFA0\" stroke-width=\"5\" stroke-linecap=\"round\"/>", "oso": "<circle cx=\"52\" cy=\"58\" r=\"26\" fill=\"#B07A4F\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"148\" cy=\"58\" r=\"26\" fill=\"#B07A4F\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"52\" cy=\"58\" r=\"12\" fill=\"#E8B98C\"/><circle cx=\"148\" cy=\"58\" r=\"12\" fill=\"#E8B98C\"/><circle cx=\"100\" cy=\"110\" r=\"68\" fill=\"#B07A4F\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><ellipse cx=\"100\" cy=\"136\" rx=\"34\" ry=\"27\" fill=\"#E8B98C\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"76\" cy=\"98\" r=\"8\" fill=\"#3A2A5C\"/><circle cx=\"124\" cy=\"98\" r=\"8\" fill=\"#3A2A5C\"/><circle cx=\"78\" cy=\"95\" r=\"2.6\" fill=\"#FFF\"/><circle cx=\"126\" cy=\"95\" r=\"2.6\" fill=\"#FFF\"/><ellipse cx=\"100\" cy=\"126\" rx=\"12\" ry=\"9\" fill=\"#3A2A5C\"/><path d=\"M100 135 v8 M88 146 q12 10 24 0\" fill=\"none\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linecap=\"round\"/><circle cx=\"62\" cy=\"128\" r=\"8\" fill=\"#F7A9B8\" opacity=\".75\"/><circle cx=\"138\" cy=\"128\" r=\"8\" fill=\"#F7A9B8\" opacity=\".75\"/>", "pan": "<g transform=\"translate(100 104) scale(1.18) translate(-100 -114)\"><path d=\"M24 138 C24 70 176 70 176 138 Z\" fill=\"#F7C6D9\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M22 138 C22 160 178 160 178 138 Z\" fill=\"#E9A65C\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M100 82 V136 M64 92 C76 108 80 124 80 136 M136 92 C124 108 120 124 120 136 M40 112 C54 120 60 128 62 136 M160 112 C146 120 140 128 138 136\" fill=\"none\" stroke=\"#C9739A\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M44 106 C80 96 120 96 156 106\" fill=\"none\" stroke=\"#C9739A\" stroke-width=\"5\" stroke-linecap=\"round\"/><\/g>", "pato": "<path d=\"M150 128 L188 98 L176 146 Z\" fill=\"#FFD43B\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><ellipse cx=\"112\" cy=\"140\" rx=\"64\" ry=\"42\" fill=\"#FFD43B\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M88 182 l-10 12 h24 Z M126 182 l-10 12 h24 Z\" fill=\"#F59B23\" stroke=\"#3A2A5C\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"70\" cy=\"80\" r=\"36\" fill=\"#FFD43B\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M38 84 C18 80 12 96 28 100 C38 102 46 100 50 94 Z\" fill=\"#F59B23\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"68\" cy=\"72\" r=\"6\" fill=\"#3A2A5C\"/><circle cx=\"70\" cy=\"70\" r=\"2\" fill=\"#FFF\"/><circle cx=\"82\" cy=\"90\" r=\"7\" fill=\"#F7A9B8\" opacity=\".8\"/><path d=\"M100 130 C122 116 154 122 160 140 C142 154 116 154 100 130 Z\" fill=\"#F5B417\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>", "queso": "<path d=\"M24 120 L150 70 L182 100 Z\" fill=\"#FFE27A\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M24 120 L182 100 L182 160 L24 178 Z\" fill=\"#FFD43B\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"60\" cy=\"150\" r=\"10\" fill=\"#F5B417\" stroke=\"#3A2A5C\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"104\" cy=\"136\" r=\"13\" fill=\"#F5B417\" stroke=\"#3A2A5C\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"150\" cy=\"148\" r=\"9\" fill=\"#F5B417\" stroke=\"#3A2A5C\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"126\" cy=\"164\" r=\"6\" fill=\"#F5B417\" stroke=\"#3A2A5C\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><ellipse cx=\"128\" cy=\"96\" rx=\"12\" ry=\"6\" fill=\"#F5B417\" stroke=\"#3A2A5C\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>", "sol": "<line x1=\"166.0\" y1=\"100.0\" x2=\"190.0\" y2=\"100.0\" stroke=\"#3A2A5C\" stroke-width=\"20\" stroke-linecap=\"round\"/><line x1=\"166.0\" y1=\"100.0\" x2=\"190.0\" y2=\"100.0\" stroke=\"#F59B23\" stroke-width=\"10\" stroke-linecap=\"round\"/><line x1=\"146.6690476001952\" y1=\"146.6690475164291\" x2=\"163.63961036390253\" y2=\"163.63961024967602\" stroke=\"#3A2A5C\" stroke-width=\"20\" stroke-linecap=\"round\"/><line x1=\"146.6690476001952\" y1=\"146.6690475164291\" x2=\"163.63961036390253\" y2=\"163.63961024967602\" stroke=\"#F59B23\" stroke-width=\"10\" stroke-linecap=\"round\"/><line x1=\"100.00000011846318\" y1=\"166.0\" x2=\"100.00000016154068\" y2=\"190.0\" stroke=\"#3A2A5C\" stroke-width=\"20\" stroke-linecap=\"round\"/><line x1=\"100.00000011846318\" y1=\"166.0\" x2=\"100.00000016154068\" y2=\"190.0\" stroke=\"#F59B23\" stroke-width=\"10\" stroke-linecap=\"round\"/><line x1=\"53.33095256733703\" y1=\"146.6690476839613\" x2=\"36.36038986455049\" y2=\"163.63961047812904\" stroke=\"#3A2A5C\" stroke-width=\"20\" stroke-linecap=\"round\"/><line x1=\"53.33095256733703\" y1=\"146.6690476839613\" x2=\"36.36038986455049\" y2=\"163.63961047812904\" stroke=\"#F59B23\" stroke-width=\"10\" stroke-linecap=\"round\"/><line x1=\"34.0\" y1=\"100.00000023692634\" x2=\"10.0\" y2=\"100.00000032308137\" stroke=\"#3A2A5C\" stroke-width=\"20\" stroke-linecap=\"round\"/><line x1=\"34.0\" y1=\"100.00000023692634\" x2=\"10.0\" y2=\"100.00000032308137\" stroke=\"#F59B23\" stroke-width=\"10\" stroke-linecap=\"round\"/><line x1=\"53.33095223227258\" y1=\"53.330952651103146\" x2=\"36.360389407644426\" y2=\"36.36038997877702\" stroke=\"#3A2A5C\" stroke-width=\"20\" stroke-linecap=\"round\"/><line x1=\"53.33095223227258\" y1=\"53.330952651103146\" x2=\"36.360389407644426\" y2=\"36.36038997877702\" stroke=\"#F59B23\" stroke-width=\"10\" stroke-linecap=\"round\"/><line x1=\"99.99999964461051\" y1=\"34.0\" x2=\"99.99999951537797\" y2=\"10.0\" stroke=\"#3A2A5C\" stroke-width=\"20\" stroke-linecap=\"round\"/><line x1=\"99.99999964461051\" y1=\"34.0\" x2=\"99.99999951537797\" y2=\"10.0\" stroke=\"#F59B23\" stroke-width=\"10\" stroke-linecap=\"round\"/><line x1=\"146.66904726513076\" y1=\"53.33095214850648\" x2=\"163.6396099069965\" y2=\"36.36038929341793\" stroke=\"#3A2A5C\" stroke-width=\"20\" stroke-linecap=\"round\"/><line x1=\"146.66904726513076\" y1=\"53.33095214850648\" x2=\"163.6396099069965\" y2=\"36.36038929341793\" stroke=\"#F59B23\" stroke-width=\"10\" stroke-linecap=\"round\"/><circle cx=\"100\" cy=\"100\" r=\"54\" fill=\"#FFD43B\" stroke=\"#3A2A5C\" stroke-width=\"6\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"82\" cy=\"92\" r=\"6\" fill=\"#3A2A5C\"/><circle cx=\"118\" cy=\"92\" r=\"6\" fill=\"#3A2A5C\"/><circle cx=\"70\" cy=\"110\" r=\"8\" fill=\"#F7A0A8\" opacity=\".8\"/><circle cx=\"130\" cy=\"110\" r=\"8\" fill=\"#F7A0A8\" opacity=\".8\"/><path d=\"M84 112 q16 16 32 0\" fill=\"none\" stroke=\"#3A2A5C\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>"}, BASICAS = 4;
+  let i = 0, resuelta = false, timers = [];
+  const $ = (s) => document.querySelector(s);
+
+  let ac = null;
+  const audio = () => { try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === 'suspended') ac.resume(); return ac; } catch (e) { return null; } };
+  function tono(f1, f2, ini, dur, vol, tipo) {
+    const a = audio(); if (!a) return;
+    const t = a.currentTime + ini, o = a.createOscillator(), g = a.createGain();
+    o.type = tipo || 'sine'; o.frequency.setValueAtTime(f1, t); o.frequency.exponentialRampToValueAtTime(f2, t + dur);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g).connect(a.destination); o.start(t); o.stop(t + dur + 0.05);
+  }
+  let voces = [];
+  function vozFemenina(vs) {
+    const es = (vs || []).filter((x) => /^es/i.test(x.lang));
+    const fem = /paulina|ang[eé]lica|marisol|m[oó]nica|soledad|isabela|esperanza|sabina|dalia|helena|laura|elvira|paloma|valentina|ximena|renata|lupe|female|mujer|google español/i;
+    const masc = /juan|jorge|diego|carlos|ra[uú]l|pablo|[aá]lvaro|enrique|male\b|hombre/i;
+    const mx = (x) => /es[-_](MX|419)/i.test(x.lang), us = (x) => /es[-_]US/i.test(x.lang);
+    return es.find((x) => mx(x) && fem.test(x.name)) || es.find((x) => us(x) && fem.test(x.name)) || es.find((x) => fem.test(x.name))
+      || es.find((x) => mx(x) && !masc.test(x.name)) || es.find((x) => !masc.test(x.name)) || es[0] || null;
+  }
+  const cargarVoces = () => { try { voces = window.speechSynthesis ? window.speechSynthesis.getVoices() : []; } catch (e) { voces = []; } };
+  cargarVoces(); try { window.speechSynthesis && window.speechSynthesis.addEventListener('voiceschanged', cargarVoces); } catch (e) {}
+  function decir(t, cancelar = true) {
+    try {
+      const s = window.speechSynthesis; if (!s) return;
+      if (cancelar) s.cancel();
+      const u = new SpeechSynthesisUtterance(t); u.lang = 'es-MX'; u.rate = 0.8; u.pitch = 1.2;
+      const v = vozFemenina(voces); if (v) u.voice = v; s.speak(u);
+    } catch (e) {}
+  }
+  const svg = (k) => `<svg viewBox="0 0 200 200" role="img" aria-label="${k}">${DIBUJOS[k]}</svg>`;
+  const mezclar = (a) => { const b = a.slice(); for (let k = b.length - 1; k > 0; k--) { const j = Math.floor(Math.random() * (k + 1)); [b[k], b[j]] = [b[j], b[k]]; } return b; };
+  const cap = (w) => w.charAt(0).toUpperCase() + w.slice(1);
+  let orden = [];
+  function puntos() {
+    $('#puntos').innerHTML = RONDAS.map((r, k) => `<span class="punto${r[5] ? ' reto' : ''}${k < i ? ' hecho' : ''}${k === i ? ' actual' : ''}"></span>`).join('')
+      + `<span class="punto estrella${i >= RONDAS.length ? ' actual' : ''}"></span>`;
+  }
+  function preguntar() {
+    const r = RONDAS[i]; if (!r) return;
+    $('#globo').classList.add('habla');
+    decir(`Veo, veo... algo que empieza con... ${r[2]}`);
+    clearTimeout(timers[0]); timers[0] = setTimeout(() => $('#globo').classList.remove('habla'), 3500);
+  }
+  function pintar() {
+    puntos();
+    const fin = i >= RONDAS.length;
+    $('#escena').hidden = fin; $('#final').hidden = !fin;
+    $('#btnOir').hidden = fin; $('#btnSig').hidden = fin;
+    $('#btnAtras').hidden = i === 0; $('#btnAtras').textContent = fin ? 'Volver' : 'Anterior';
+    if (fin) { $('#todas').innerHTML = RONDAS.map((r) => svg(r[0])).join(''); return; }
+    const r = RONDAS[i]; resuelta = false;
+    orden = mezclar([r[0], ...r[4]]);
+    $('#son').textContent = r[1];
+    $('#respuesta').innerHTML = r[5] ? '<span class="mas">Reto</span>' : '';
+    $('#opciones').innerHTML = orden.map((k) => `<button class="op" type="button" data-k="${k}" aria-label="${k}">${svg(k)}</button>`).join('');
+  }
+  function elegir(btn) {
+    if (resuelta) return; audio();
+    const r = RONDAS[i], k = btn.dataset.k;
+    if (k === r[0]) {
+      resuelta = true; btn.classList.add('bien');
+      document.querySelectorAll('.op').forEach((o) => { if (o !== btn) o.classList.add('apagada'); });
+      tono(523, 784, 0, 0.18, 0.25); tono(659, 1047, 0.16, 0.25, 0.25);
+      $('#respuesta').innerHTML = `<div><span class="grande"><span class="q">${cap(r[0]).charAt(0)}</span>${r[0].slice(1)}</span>`
+        + `<span class="mas">¿Qué más hay en el salón que empiece con ${r[1].replace('…', '')}?</span></div>`;
+      decir(`¡Sí! ${r[0]}. ${cap(r[0])} empieza con ${r[2]}. ¿Qué más hay en el salón que empiece así?`);
+    } else {
+      btn.classList.remove('mal'); void btn.offsetWidth; btn.classList.add('mal');
+      tono(300, 200, 0, 0.25, 0.18, 'triangle');
+      decir(`${k}... no. Escucha otra vez: ${r[2]}`);
+    }
+  }
+  function ir(n) { i = Math.max(0, Math.min(RONDAS.length, n)); parar(); pintar(); if (i < RONDAS.length) preguntar(); }
+
+  let tReloj = 0;
+  function parar() { clearInterval(tReloj); $('#reloj').textContent = ''; $('#btnMinuto').textContent = '1 minuto'; }
+  $('#btnMinuto').addEventListener('click', () => {
+    audio(); clearInterval(tReloj); let s = 60; $('#reloj').textContent = '1:00'; $('#btnMinuto').textContent = 'Otra vez';
+    tReloj = setInterval(() => { s--; $('#reloj').textContent = `0:${String(s).padStart(2, '0')}`; if (s <= 0) { clearInterval(tReloj); $('#reloj').textContent = '¡Listo!'; tono(660, 880, 0, 0.4, 0.25); } }, 1000);
+  });
+  $('#globo').addEventListener('click', () => { audio(); preguntar(); });
+  $('#btnOir').addEventListener('click', () => { audio(); preguntar(); });
+  $('#opciones').addEventListener('click', (e) => { const b = e.target.closest('.op'); if (b) elegir(b); });
+  $('#btnSig').addEventListener('click', () => ir(i + 1));
+  $('#btnAtras').addEventListener('click', () => ir(i - 1));
+  document.addEventListener('keydown', (e) => {
+    if ((e.key === ' ' || e.key === 'Enter') && e.target && e.target.closest && e.target.closest('button')) return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); ir(i + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') ir(i - 1);
+  });
+  $('#btnPantalla').addEventListener('click', () => {
+    try {
+      if (document.fullscreenElement) { document.exitFullscreen && document.exitFullscreen().catch(() => {}); }
+      else if (document.documentElement.requestFullscreen) { document.documentElement.requestFullscreen().catch(() => {}); }
+    } catch (e) {}
+  });
+  pintar();
+})();
+</script>
+</body>
+</html>
