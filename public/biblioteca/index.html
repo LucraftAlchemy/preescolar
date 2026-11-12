@@ -208,7 +208,7 @@ button.libro-btn:hover { transform: translateY(-4px) rotate(-1deg); }
 .mensaje-final { text-align: center; font-family: var(--f-disp); font-weight: 800; font-size: clamp(24px, 3vw, 34px); }
 
 /* ---------- reglamento ---------- */
-.reglas { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr)); gap: 18px; }
+.reglas { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 18px; }
 .regla { display: flex; flex-direction: column; gap: 10px; text-align: left; background: var(--surface); border: 2px solid var(--line); border-radius: 22px; padding: 14px 14px 18px; box-shadow: var(--shadow); transition: transform .12s ease; }
 .regla:hover { transform: translateY(-3px); }
 .regla .ilus { display: block; width: 100%; height: auto; background: var(--surface-2); border-radius: 16px; }
@@ -793,17 +793,20 @@ body { min-height: 100vh; background: transparent; }
 
   // ---------- reglamento ----------
   const REGLAS = [
-    { t: 'Manos limpias', d: 'Me lavo las manos antes de tomar un libro.', svg: () => `
-      <svg class="ilus" viewBox="0 0 240 170" role="img" aria-label="Dos manos limpias con burbujas de jabón">
-        <g transform="translate(56 40)"><use href="#manoForma" style="fill:var(--skin-line);stroke:var(--skin-line);stroke-width:6;stroke-linejoin:round"/><use href="#manoForma" style="fill:var(--skin)"/></g>
-        <g transform="translate(184 40) scale(-1 1)"><use href="#manoForma" style="fill:var(--skin-line);stroke:var(--skin-line);stroke-width:6;stroke-linejoin:round"/><use href="#manoForma" style="fill:var(--skin)"/></g>
-        <g style="fill:var(--water)"><path d="M120 14 c5 7 7 10 7 14 a7 7 0 1 1 -14 0 c0 -4 2 -7 7 -14z"/><path d="M98 30 c4 5 5 8 5 11 a5 5 0 1 1 -10 0 c0 -3 1 -6 5 -11z"/><path d="M144 26 c4 5 5 8 5 11 a5 5 0 1 1 -10 0 c0 -3 1 -6 5 -11z"/></g>
-        <g style="fill:rgba(120,190,255,.28);stroke:var(--water);stroke-width:2.5"><circle cx="30" cy="54" r="12"/><circle cx="210" cy="62" r="14"/><circle cx="40" cy="132" r="8"/><circle cx="204" cy="128" r="9"/></g>
-        <g style="fill:#FFFFFF"><circle cx="26" cy="50" r="3"/><circle cx="205" cy="57" r="3.5"/></g>
-        <g style="fill:var(--yellow)"><path d="M20 96 q2 -8 10 -10 q-8 -2 -10 -10 q-2 8 -10 10 q8 2 10 10z"/><path d="M222 98 q2 -7 9 -9 q-7 -2 -9 -9 q-2 7 -9 9 q7 2 9 9z"/></g>
-        <rect x="96" y="140" width="48" height="20" rx="8" style="fill:var(--c5)"/><rect x="104" y="145" width="20" height="5" rx="2.5" style="fill:rgba(255,255,255,.6)"/>
+    { t: 'Leo en silencio', d: 'Leo y platico con voz bajita para que todos disfruten.', svg: () => `
+      <svg class="ilus" viewBox="0 0 240 170" role="img" aria-label="Una niña con el dedo en los labios haciendo shhh">
+        <circle cx="104" cy="88" r="57" style="fill:var(--skin);stroke:var(--skin-line);stroke-width:3"/>
+        <path d="M48 80 C50 40 82 26 108 28 C136 30 160 48 160 80 C146 62 128 54 106 56 C84 56 64 64 48 80 Z" style="fill:var(--hair)"/>
+        <path d="M78 86 q9 -8 18 0 M112 86 q9 -8 18 0" style="fill:none;stroke:var(--hair);stroke-width:3.5;stroke-linecap:round"/>
+        <circle cx="76" cy="104" r="8" style="fill:#F29BA0;opacity:.7"/><circle cx="134" cy="104" r="8" style="fill:#F29BA0;opacity:.7"/>
+        <ellipse cx="105" cy="118" rx="7" ry="5" style="fill:#B4475A"/>
+        <rect x="99" y="98" width="13" height="40" rx="6.5" style="fill:var(--skin);stroke:var(--skin-line);stroke-width:2.5"/>
+        <rect x="90" y="128" width="32" height="30" rx="12" style="fill:var(--skin);stroke:var(--skin-line);stroke-width:2.5"/>
+        <text x="170" y="74" style="font-family:var(--f-disp);font-weight:800;font-size:28px;fill:var(--purple)">shhh</text>
+        <path d="M172 92 q8 -6 16 0 t16 0 t16 0" style="fill:none;stroke:var(--purple);stroke-width:3;stroke-linecap:round;opacity:.7"/>
+        <path d="M178 106 q7 -5 14 0 t14 0" style="fill:none;stroke:var(--purple);stroke-width:3;stroke-linecap:round;opacity:.4"/>
       </svg>` },
-    { t: 'Hojas despacio', d: 'Paso las hojas con cuidado, una por una.', svg: () => `
+    { t: 'Cuido los libros', d: 'Tomo los libros con las manos limpias y paso las hojas despacio.', svg: () => `
       <svg class="ilus" viewBox="0 0 240 170" role="img" aria-label="Un libro abierto con una hoja que da vuelta despacio y un caracol">
         <path d="M38 48 L38 128 C70 120 100 120 120 132 C140 120 170 120 202 128 L202 48" style="fill:var(--c4)"/>
         <path d="M120 44 C100 32 70 32 44 42 L44 120 C70 112 100 112 120 124 Z" style="fill:#FFFFFF;stroke:var(--purple-ink);stroke-width:2.5;stroke-linejoin:round"/>
@@ -819,7 +822,7 @@ body { min-height: 100vh; background: transparent; }
           <path d="M0 -22 m-1 0 a5 5 0 1 1 5 5 a9 9 0 1 1 -9 -9 a12 12 0 0 1 12 12" style="fill:none;stroke:var(--wood-dark);stroke-width:2.5;stroke-linecap:round"/>
         </g>
       </svg>` },
-    { t: 'Cada libro a su lugar', d: 'Cuando termino, regreso el libro a su lugar.', svg: () => `
+    { t: 'Coloco los libros en su lugar', d: 'Cuando termino, regreso el libro a su lugar en el librero.', svg: () => `
       <svg class="ilus" viewBox="0 0 240 170" role="img" aria-label="Un libro que regresa a su lugar en el librero">
         <rect x="24" y="130" width="192" height="12" rx="3" style="fill:var(--wood)"/><rect x="32" y="142" width="10" height="20" rx="2" style="fill:var(--wood-dark)"/><rect x="198" y="142" width="10" height="20" rx="2" style="fill:var(--wood-dark)"/>
         <g style="stroke:rgba(0,0,0,.18);stroke-width:1.5">
@@ -832,18 +835,38 @@ body { min-height: 100vh; background: transparent; }
         <path d="M138 48 C130 38 116 36 109 46" style="fill:none;stroke:var(--purple-ink);stroke-width:3.5;stroke-linecap:round"/>
         <path d="M103 40 L108 50 L116 43" style="fill:none;stroke:var(--purple-ink);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round"/>
       </svg>` },
-    { t: 'Voz bajita', d: 'En la biblioteca hablamos con voz bajita.', svg: () => `
-      <svg class="ilus" viewBox="0 0 240 170" role="img" aria-label="Una niña con el dedo en los labios haciendo shhh">
-        <circle cx="104" cy="88" r="57" style="fill:var(--skin);stroke:var(--skin-line);stroke-width:3"/>
-        <path d="M48 80 C50 40 82 26 108 28 C136 30 160 48 160 80 C146 62 128 54 106 56 C84 56 64 64 48 80 Z" style="fill:var(--hair)"/>
-        <path d="M78 86 q9 -8 18 0 M112 86 q9 -8 18 0" style="fill:none;stroke:var(--hair);stroke-width:3.5;stroke-linecap:round"/>
-        <circle cx="76" cy="104" r="8" style="fill:#F29BA0;opacity:.7"/><circle cx="134" cy="104" r="8" style="fill:#F29BA0;opacity:.7"/>
-        <ellipse cx="105" cy="118" rx="7" ry="5" style="fill:#B4475A"/>
-        <rect x="99" y="98" width="13" height="40" rx="6.5" style="fill:var(--skin);stroke:var(--skin-line);stroke-width:2.5"/>
-        <rect x="90" y="128" width="32" height="30" rx="12" style="fill:var(--skin);stroke:var(--skin-line);stroke-width:2.5"/>
-        <text x="170" y="74" style="font-family:var(--f-disp);font-weight:800;font-size:28px;fill:var(--purple)">shhh</text>
-        <path d="M172 92 q8 -6 16 0 t16 0 t16 0" style="fill:none;stroke:var(--purple);stroke-width:3;stroke-linecap:round;opacity:.7"/>
-        <path d="M178 106 q7 -5 14 0 t14 0" style="fill:none;stroke:var(--purple);stroke-width:3;stroke-linecap:round;opacity:.4"/>
+    { t: 'Mantengo la biblioteca limpia', d: 'Dejo la biblioteca ordenada y sin basura.', svg: () => `
+      <svg class="ilus" viewBox="0 0 240 170" role="img" aria-label="Una escoba barriendo junto a un bote de basura y un piso brillante">
+        <rect x="20" y="146" width="200" height="10" rx="5" style="fill:var(--wood)"/>
+        <path d="M150 20 L110 118" style="stroke:var(--wood-dark);stroke-width:9;stroke-linecap:round"/>
+        <path d="M92 112 L130 128 L120 150 L70 146 Z" style="fill:var(--c2);stroke:var(--purple-ink);stroke-width:2.5;stroke-linejoin:round"/>
+        <rect x="94" y="106" width="40" height="16" rx="5" transform="rotate(22 114 114)" style="fill:var(--c0);stroke:var(--purple-ink);stroke-width:2.5"/>
+        <path d="M84 138 L78 148 M96 140 L92 150 M108 142 L106 150" style="stroke:var(--purple-ink);stroke-width:2.5;stroke-linecap:round"/>
+        <path d="M30 112 L36 146 H70 L76 112 Z" style="fill:var(--c5);stroke:var(--purple-ink);stroke-width:2.5;stroke-linejoin:round"/>
+        <rect x="26" y="102" width="54" height="12" rx="5" style="fill:var(--c5);stroke:var(--purple-ink);stroke-width:2.5"/>
+        <path d="M44 122 V138 M53 122 V138 M62 122 V138" style="stroke:rgba(255,255,255,.7);stroke-width:3;stroke-linecap:round"/>
+        <g style="fill:var(--yellow)"><path d="M184 112 q2 -9 11 -11 q-9 -2 -11 -11 q-2 9 -11 11 q9 2 11 11z"/><path d="M206 136 q1.5 -6 7 -7.5 q-5.5 -1.5 -7 -7 q-1.5 5.5 -7 7 q5.5 1.5 7 7.5z"/><path d="M166 64 q1.5 -6 7 -7.5 q-5.5 -1.5 -7 -7 q-1.5 5.5 -7 7 q5.5 1.5 7 7.5z"/></g>
+      </svg>` },
+    { t: 'No como, ni bebo', d: 'En la biblioteca no comemos ni bebemos para no manchar los libros.', svg: () => `
+      <svg class="ilus" viewBox="0 0 240 170" role="img" aria-label="Una manzana y un vaso de jugo tachados">
+        <path d="M78 58 C58 46 34 58 36 88 C38 118 58 140 74 136 C80 134 84 132 88 134 C104 140 122 116 122 88 C122 58 98 46 78 58 Z" style="fill:var(--c0);stroke:var(--purple-ink);stroke-width:2.5;stroke-linejoin:round"/>
+        <path d="M80 58 C80 46 84 38 92 32" style="fill:none;stroke:var(--wood-dark);stroke-width:4;stroke-linecap:round"/>
+        <path d="M84 44 C92 32 106 32 110 38 C102 46 92 48 84 44 Z" style="fill:var(--c3);stroke:var(--purple-ink);stroke-width:2"/>
+        <path d="M134 56 L144 140 H186 L196 56 Z" style="fill:#FFFFFF;stroke:var(--purple-ink);stroke-width:2.5;stroke-linejoin:round"/>
+        <path d="M137 80 L145 138 H185 L193 80 Z" style="fill:var(--c1)"/>
+        <path d="M176 56 L186 24 L200 22" style="fill:none;stroke:var(--c5);stroke-width:6;stroke-linecap:round;stroke-linejoin:round"/>
+        <circle cx="120" cy="88" r="76" style="fill:none;stroke:#E1262D;stroke-width:10;opacity:.92"/>
+        <path d="M66 34 L174 142" style="stroke:#E1262D;stroke-width:10;stroke-linecap:round;opacity:.92"/>
+      </svg>` },
+    { t: 'Me anoto en el registro', d: 'Cuando me llevo un libro a casa, me anoto en el registro.', svg: () => `
+      <svg class="ilus" viewBox="0 0 240 170" role="img" aria-label="Una tabla de registro con nombres palomeados y un lápiz">
+        <rect x="58" y="22" width="112" height="140" rx="12" style="fill:var(--wood);stroke:var(--purple-ink);stroke-width:2.5"/>
+        <rect x="70" y="40" width="88" height="112" rx="6" style="fill:#FFFFFF;stroke:var(--purple-ink);stroke-width:2"/>
+        <rect x="90" y="14" width="48" height="20" rx="6" style="fill:var(--c5);stroke:var(--purple-ink);stroke-width:2.5"/>
+        <g style="fill:none;stroke:var(--purple-ink);stroke-width:2"><rect x="80" y="56" width="14" height="14" rx="3"/><rect x="80" y="84" width="14" height="14" rx="3"/><rect x="80" y="112" width="14" height="14" rx="3"/></g>
+        <path d="M82 63 l4 4 l8 -10 M82 91 l4 4 l8 -10" style="fill:none;stroke:#2FB673;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round"/>
+        <path d="M102 63 H146 M102 91 H140 M102 119 H132" style="stroke:#C9B6E6;stroke-width:5;stroke-linecap:round"/>
+        <g transform="translate(150 96) rotate(-40)"><rect x="0" y="0" width="70" height="18" rx="4" style="fill:var(--yellow);stroke:var(--purple-ink);stroke-width:2.5"/><path d="M70 0 L90 9 L70 18 Z" style="fill:#F4D3A8;stroke:var(--purple-ink);stroke-width:2.5;stroke-linejoin:round"/><rect x="-10" y="0" width="12" height="18" rx="4" style="fill:var(--c4);stroke:var(--purple-ink);stroke-width:2.5"/></g>
       </svg>` },
   ];
   function pintarReglas() {
