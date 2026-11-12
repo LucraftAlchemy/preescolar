@@ -251,6 +251,13 @@ button.libro-btn:hover { transform: translateY(-4px) rotate(-1deg); }
 .leer .lema small { display: block; font-family: var(--f-text); font-size: 20px; color: var(--muted); font-weight: 400; margin-top: 6px; }
 
 /* ---------- registro y ajustes ---------- */
+.grupo-reg { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 190px), 1fr)); gap: 10px; margin-bottom: 18px; }
+.nino-reg { background: var(--surface); border: 2px solid var(--line); border-left: 8px solid var(--c, #CDB4FF); border-radius: 16px; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.nino-reg .nom { font-size: 22px; font-weight: 800; line-height: 1.1; overflow-wrap: anywhere; }
+.nino-reg .lib { font-size: 15px; color: var(--muted); overflow-wrap: anywhere; }
+.nino-reg .lib b { color: var(--ink, inherit); }
+.nino-reg .cuenta { font-size: 14px; font-weight: 700; }
+.nino-reg.tarde { background: #FDE2E3; border-left-color: #E1262D; }
 .tabla-wrap { overflow-x: auto; border: 2px solid var(--line); border-radius: 16px; background: var(--surface); }
 table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 17px; }
 th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: middle; }
@@ -446,6 +453,8 @@ body { min-height: 100vh; background: transparent; }
   <!-- REGISTRO -->
   <section class="vista" id="v-registro" role="tabpanel" aria-labelledby="t-registro" hidden>
     <div class="cab-vista"><h2>Registro de préstamos</h2><p id="resRegistro"></p></div>
+    <h3>Nuestro grupo</h3>
+    <div class="grupo-reg" id="grupoReg"></div>
     <h3>Libros que están en casa</h3>
     <div class="tabla-wrap"><table><thead><tr><th>Nombre</th><th>Libro</th><th>Se lo llevó</th><th>Regresar a más tardar</th><th>Estado</th><th></th></tr></thead><tbody id="tbFuera"></tbody></table></div>
     <h3>Historial</h3>
@@ -782,6 +791,14 @@ body { min-height: 100vh; background: transparent; }
     const punto = (p) => `<span class="punto" style="--c:${color(libroPorId(p.libroId)?.color ?? p.color)}"></span>`;
     const estado = (p) => { const r = retrasoDias(p), f = faltanDias(p);
       return r ? `<span class="estado tarde">${txtRetraso(r)} de retraso</span>` : f === 0 ? '<span class="estado hoy">Se regresa hoy</span>' : `<span class="estado libre">Faltan ${txtRetraso(f)}</span>`; };
+    const ninos = grupo();
+    $('#grupoReg').innerHTML = ninos.length ? ninos.map((n) => {
+      const tiene = fuera.filter((p) => p.nino === n), leidos = S.prestamos.filter((p) => p.nino === n).length;
+      const tarde = tiene.some((p) => retrasoDias(p) > 0);
+      const lib = tiene.length ? tiene.map((p) => `Tiene: <b>${esc(p.titulo)}</b>`).join('<br>') : 'Sin libro en casa';
+      const c = tiene.length ? color(libroPorId(tiene[0].libroId)?.color ?? tiene[0].color) : '#CDB4FF';
+      return `<div class="nino-reg${tarde ? ' tarde' : ''}" style="--c:${c}"><span class="nom">${rojas(n)}</span><span class="lib">${lib}</span><span class="cuenta">📚 ${leidos} ${leidos === 1 ? 'libro leído' : 'libros leídos'}</span></div>`;
+    }).join('') : `<p style="color:var(--muted)">Escribe los nombres del grupo en <button class="btn" type="button" data-ir="ajustes">Ajustes</button> y aquí aparecerá cada niño con su libro.</p>`;
     $('#tbFuera').innerHTML = fuera.length ? fuera.map((p) => `<tr${retrasoDias(p) ? ' class="fila-tarde"' : ''}><td><b>${rojas(p.nino)}</b></td><td>${punto(p)}${esc(p.titulo)}</td><td class="num">${esc(conHora(p.salida))}</td><td class="num">${esc(limiteTxt(p))}</td><td>${estado(p)}</td>
       <td>${S.soloLectura ? '' : `<button class="btn" type="button" data-regreso-reg="${esc(p.id)}">Ya lo regresó</button>`}</td></tr>`).join('')
       : `<tr><td colspan="6" style="color:var(--muted)">Todos los libros están en la biblioteca.</td></tr>`;
