@@ -319,7 +319,7 @@ body { background: var(--bg) radial-gradient(circle at 1px 1px, rgba(176, 125, 7
 
 a.icon-btn { color: inherit; text-decoration: none; display: inline-grid; place-items: center; }
 .nota { margin: 0 0 10px; color: var(--muted); font-size: 16px; }
-#inLista { width: 100%; font: inherit; color: var(--ink); background: var(--surface); border: 2px solid var(--line); border-radius: 14px; padding: 10px 12px; margin-bottom: 10px; resize: vertical; }
+#inLista, #inAnteriores { width: 100%; font: inherit; color: var(--ink); background: var(--surface); border: 2px solid var(--line); border-radius: 14px; padding: 10px 12px; margin-bottom: 10px; resize: vertical; }
 .estado.tarde { background: #FDE2E3; color: #B3261E; }
 .estado.hoy { background: var(--yellow-soft); color: #7A5B00; }
 .ficha .renglon b.tarde { color: #B3261E; }
@@ -457,7 +457,7 @@ body { min-height: 100vh; background: transparent; }
     <div class="grupo-reg" id="grupoReg"></div>
     <h3>Libros que están en casa</h3>
     <div class="tabla-wrap"><table><thead><tr><th>Nombre</th><th>Libro</th><th>Se lo llevó</th><th>Regresar a más tardar</th><th>Estado</th><th></th></tr></thead><tbody id="tbFuera"></tbody></table></div>
-    <h3>Historial</h3>
+    <div class="fila" style="align-items:center;gap:10px;margin-top:18px"><h3 style="margin:0">Historial</h3><label class="sr" for="selHist">Ver historial de</label><select id="selHist" style="font:inherit;font-size:17px;padding:6px 10px;border-radius:12px;border:2px solid var(--line)"><option value="">Todo el grupo</option></select></div>
     <div class="tabla-wrap"><table><thead><tr><th>Nombre</th><th>Libro</th><th>Se lo llevó</th><th>Regresar a más tardar</th><th>Lo regresó</th><th>Retraso</th></tr></thead><tbody id="tbHist"></tbody></table></div>
   </section>
 
@@ -542,6 +542,14 @@ body { min-height: 100vh; background: transparent; }
         <p class="nota">Un nombre por renglón. Se agregan a los que ya están.</p>
         <textarea id="inLista" rows="6" placeholder="Un nombre por renglón"></textarea>
         <div class="fila"><button class="btn principal" type="submit">Agregar nombres</button></div>
+      </form>
+      <form class="tarjeta" id="formAnteriores" autocomplete="off">
+        <label class="etq" for="inAnteriores">Registrar préstamos de otro día</label>
+        <p class="nota">Para anotar libros que se llevaron cuando no se usó la página. Un préstamo por renglón: nombre, guion y libro (por ejemplo: Ana - Caperucita roja). Se agregan al registro y al historial.</p>
+        <div class="fila"><label class="etq" for="inFechaAnt" style="margin:0">Se los llevaron el</label><input type="date" id="inFechaAnt" required style="font:inherit;padding:8px 10px;border:2px solid var(--line);border-radius:12px;margin-bottom:10px"></div>
+        <textarea id="inAnteriores" rows="7" placeholder="Nombre - Libro"></textarea>
+        <div class="fila"><button class="btn principal" type="submit">Registrar préstamos</button></div>
+        <p class="nota" id="resAnteriores" hidden></p>
       </form>
       <div class="tarjeta">
         <h3>Respaldo</h3>
@@ -785,7 +793,10 @@ body { min-height: 100vh; background: transparent; }
   // ---------- registro ----------
   function renderRegistro() {
     const fuera = activos().sort((a, b) => String(limiteDe(a)).localeCompare(String(limiteDe(b))));
-    const hist = [...S.prestamos].sort((a, b) => String(b.salida).localeCompare(String(a.salida))).slice(0, 300);
+    const sel = $('#selHist'), elegido = sel ? sel.value : '';
+    if (sel) { const nombres = [...new Set([...grupo(), ...S.prestamos.map((p) => p.nino)])].sort((a, b) => a.localeCompare(b, 'es'));
+      sel.innerHTML = '<option value="">Todo el grupo</option>' + nombres.map((n) => `<option${n === elegido ? ' selected' : ''}>${esc(n)}</option>`).join(''); }
+    const hist = [...S.prestamos].filter((p) => !elegido || p.nino === elegido).sort((a, b) => String(b.salida).localeCompare(String(a.salida))).slice(0, 300);
     const atrasados = fuera.filter((p) => retrasoDias(p) > 0).length;
     $('#resRegistro').textContent = S.prestamos.length ? `${fuera.length} en casa${atrasados ? ` · ${atrasados} con retraso` : ''} · ${S.prestamos.length} préstamos en total · Plazo: 2 semanas` : 'Plazo: 2 semanas (si cae en fin de semana, el lunes).';
     const punto = (p) => `<span class="punto" style="--c:${color(libroPorId(p.libroId)?.color ?? p.color)}"></span>`;
@@ -797,7 +808,9 @@ body { min-height: 100vh; background: transparent; }
       const tarde = tiene.some((p) => retrasoDias(p) > 0);
       const lib = tiene.length ? tiene.map((p) => `Tiene: <b>${esc(p.titulo)}</b>`).join('<br>') : 'Sin libro en casa';
       const c = tiene.length ? color(libroPorId(tiene[0].libroId)?.color ?? tiene[0].color) : '#CDB4FF';
-      return `<div class="nino-reg${tarde ? ' tarde' : ''}" style="--c:${c}"><span class="nom">${rojas(n)}</span><span class="lib">${lib}</span><span class="cuenta">📚 ${leidos} ${leidos === 1 ? 'libro leído' : 'libros leídos'}</span></div>`;
+      const titulos = [...new Set(S.prestamos.filter((p) => p.nino === n).sort((a, b) => String(a.salida).localeCompare(String(b.salida))).map((p) => p.titulo))];
+      const leyo = titulos.length ? `<span class="lib">Ha leído: ${titulos.map(esc).join(' · ')}</span>` : '';
+      return `<div class="nino-reg${tarde ? ' tarde' : ''}" style="--c:${c}"><span class="nom">${rojas(n)}</span><span class="lib">${lib}</span><span class="cuenta">📚 ${leidos} ${leidos === 1 ? 'libro leído' : 'libros leídos'}</span>${leyo}</div>`;
     }).join('') : `<p style="color:var(--muted)">Escribe los nombres del grupo en <button class="btn" type="button" data-ir="ajustes">Ajustes</button> y aquí aparecerá cada niño con su libro.</p>`;
     $('#tbFuera').innerHTML = fuera.length ? fuera.map((p) => `<tr${retrasoDias(p) ? ' class="fila-tarde"' : ''}><td><b>${rojas(p.nino)}</b></td><td>${punto(p)}${esc(p.titulo)}</td><td class="num">${esc(conHora(p.salida))}</td><td class="num">${esc(limiteTxt(p))}</td><td>${estado(p)}</td>
       <td>${S.soloLectura ? '' : `<button class="btn" type="button" data-regreso-reg="${esc(p.id)}">Ya lo regresó</button>`}</td></tr>`).join('')
@@ -1140,6 +1153,42 @@ body { min-height: 100vh; background: transparent; }
     });
     if (!nuevos.length) { avisar('Esos nombres ya estaban en el grupo.'); return; }
     if (await guardarAjustes({ grupo: [...ya, ...nuevos].sort((a, b) => a.localeCompare(b, 'es')) })) { $('#inLista').value = ''; avisar(nuevos.length === 1 ? 'Agregaste 1 nombre.' : `Agregaste ${nuevos.length} nombres.`); }
+  });
+  $('#selHist').addEventListener('change', () => renderRegistro());
+  { const fa = $('#inFechaAnt'); if (fa) { const d = new Date(); d.setDate(d.getDate() - 1); fa.value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; } }
+  const sinAcentos = (t) => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9ñ ]/g, ' ').replace(/\s+/g, ' ').trim();
+  $('#formAnteriores').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fecha = $('#inFechaAnt').value; if (!fecha) return;
+    const salida = new Date(fecha + 'T14:00:00').toISOString();
+    const g = grupo(), hechos = [], dudas = [];
+    for (const linea of $('#inAnteriores').value.split(/\r?\n/)) {
+      const t = linea.trim(); if (!t) continue;
+      const m = t.split(/\s+[-–—:]\s+|\s*[–—]\s*/);
+      if (m.length < 2) { dudas.push(`${t} (falta el guion entre nombre y libro)`); continue; }
+      const nomIn = m[0].trim(), libIn = m.slice(1).join(' - ').trim();
+      const nn = sinAcentos(nomIn);
+      const p1 = (x) => sinAcentos(x).split(' ')[0], q = nn.split(' ')[0];
+      const casi = (u, v) => { if (Math.abs(u.length - v.length) > 1) return false; let i = 0, j = 0, d = 0; while (i < u.length && j < v.length) { if (u[i] === v[j]) { i++; j++; } else { if (++d > 1) return false; if (u.length > v.length) i++; else if (v.length > u.length) j++; else { i++; j++; } } } return d + (u.length - i) + (v.length - j) <= 1; };
+      const nino = g.find((x) => sinAcentos(x) === nn) || g.find((x) => p1(x) === q) || (q.length >= 4 && g.find((x) => casi(p1(x), q))) || nomIn;
+      if (g.length && !g.includes(nino)) dudas.push(`${nino} no está en la lista del grupo; se anotó así`);
+      if (prestamoDe(nino)) { dudas.push(`${nino} ya tiene un libro en casa; primero márcalo como regresado`); continue; }
+      const nl = sinAcentos(libIn);
+      let libro = S.libros.find((l) => sinAcentos(nombreLibro(l)) === nl) || S.libros.find((l) => { const a = sinAcentos(nombreLibro(l)); return a && (a.includes(nl) || nl.includes(a)); });
+      if (libro && prestamoDeLibro(libro.id)) { dudas.push(`${nombreLibro(libro)} ya está prestado`); continue; }
+      let ok = true;
+      if (!libro) { const col = S.libros.length % 7; let ref = null;
+        ok = await escribir(async (db) => { ref = await db.collection('libros').add({ titulo: libIn, color: col, grupo: col, tipo: 'cuento', autor: '', alta: new Date().toISOString() }); });
+        libro = ok && ref ? { id: ref.id, titulo: libIn, color: col, tipo: 'cuento', autor: '' } : null; }
+      if (!libro) { dudas.push(`${t} (no se pudo guardar)`); continue; }
+      ok = await escribir((db) => db.collection('prestamos').add({ nino, libroId: libro.id, titulo: nombreLibro(libro), color: libro.color ?? 0, tipo: libro.tipo || 'cuento', autor: libro.autor || '', salida, limite: fechaLimite(salida), regreso: null }));
+      if (ok) hechos.push(`${nino}: ${nombreLibro(libro)}`);
+      else dudas.push(`${t} (no se pudo guardar)`);
+    }
+    const res = $('#resAnteriores');
+    res.innerHTML = (hechos.length ? `<b>Registrados (${hechos.length}):</b> ${hechos.map(esc).join(' · ')}` : '') + (dudas.length ? `<br><b>Revisa:</b> ${dudas.map(esc).join(' · ')}` : '');
+    res.hidden = false;
+    if (hechos.length) { $('#inAnteriores').value = dudas.length ? $('#inAnteriores').value : ''; avisar(hechos.length === 1 ? 'Se registró 1 préstamo.' : `Se registraron ${hechos.length} préstamos.`); }
   });
   $('#btnRespaldo').addEventListener('click', () => {
     const blob = new Blob([JSON.stringify({ ...datos, respaldo: new Date().toISOString() }, null, 1)], { type: 'application/json' });
