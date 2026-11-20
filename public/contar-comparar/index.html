@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Contar y comparar</title>
-<meta name="description" content="Para proyectar en preescolar: contar del 1 al 10 con palmadas y saltos, y decir dónde hay más manzanas, peras, corazones o triángulos.">
+<meta name="description" content="Para proyectar en preescolar: contar del 1 al 10 con palmadas y saltos, y decir dónde hay más manzanas, peras, corazones, triángulos, carros, pinos, esferas, lupas o lápices.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Preescolar">
 <meta property="og:locale" content="es_MX">
 <meta property="og:title" content="Contar y comparar">
-<meta property="og:description" content="Para proyectar en preescolar: contar del 1 al 10 con palmadas y saltos, y decir dónde hay más manzanas, peras, corazones o triángulos.">
+<meta property="og:description" content="Para proyectar en preescolar: contar del 1 al 10 con palmadas y saltos, y decir dónde hay más manzanas, peras, corazones, triángulos, carros, pinos, esferas, lupas o lápices.">
 <meta property="og:url" content="https://preescolar.lucraft.com.mx/contar-comparar/">
 <meta property="og:image" content="https://preescolar.lucraft.com.mx/og.jpg">
 <meta property="og:image:width" content="1200">
@@ -140,12 +140,20 @@ button { font: inherit; color: inherit; cursor: pointer; }
   'use strict';
   const RONDAS = [[3, 'manzana', 5, 'pera'], [6, 'corazon', 2, 'triangulo'], [4, 'manzana', 7, 'manzana'], [8, 'pera', 5, 'corazon'], [2, 'triangulo', 6, 'triangulo'],
     [7, 'corazon', 4, 'manzana'], [5, 'pera', 9, 'triangulo'], [1, 'manzana', 4, 'corazon'], [10, 'triangulo', 6, 'pera'], [3, 'corazon', 3, 'corazon'],
-    [9, 'manzana', 7, 'pera'], [4, 'triangulo', 8, 'corazon'], [6, 'pera', 5, 'manzana'], [2, 'corazon', 9, 'triangulo'], [5, 'manzana', 5, 'pera']];
+    [9, 'manzana', 7, 'pera'], [4, 'triangulo', 8, 'corazon'], [6, 'pera', 5, 'manzana'], [2, 'corazon', 9, 'triangulo'],
+    [4, 'carro', 6, 'pino'], [7, 'esfera', 3, 'lupa'], [5, 'lapiz', 8, 'lapiz'], [9, 'pino', 6, 'carro'], [2, 'lupa', 5, 'esfera'],
+    [6, 'carro', 6, 'carro'], [8, 'lapiz', 4, 'pino'], [3, 'esfera', 10, 'esfera'], [7, 'lupa', 9, 'lapiz'], [5, 'pino', 3, 'carro'],
+    [5, 'manzana', 5, 'pera']];
   const FIG = {
     manzana: ['manzana', 'manzanas', '<path d="M50 30 C30 18 10 32 12 56 C14 80 32 94 50 86 C68 94 86 80 88 56 C90 32 70 18 50 30 Z" fill="#F0454B" stroke="#2E2350" stroke-width="6" stroke-linejoin="round"/><path d="M50 30 C50 22 52 14 58 8" fill="none" stroke="#2E2350" stroke-width="6" stroke-linecap="round"/><path d="M56 18 C66 6 82 8 84 14 C74 22 62 22 56 18 Z" fill="#6CC24A" stroke="#2E2350" stroke-width="4" stroke-linejoin="round"/><ellipse cx="32" cy="46" rx="6" ry="10" fill="#FFFFFF" opacity=".5"/>'],
     pera: ['pera', 'peras', '<path d="M50 14 C40 14 38 26 38 36 C38 46 20 54 20 72 C20 88 34 96 50 96 C66 96 80 88 80 72 C80 54 62 46 62 36 C62 26 60 14 50 14 Z" fill="#B7DB4B" stroke="#2E2350" stroke-width="6" stroke-linejoin="round"/><path d="M50 14 C50 10 52 6 56 4" fill="none" stroke="#2E2350" stroke-width="5" stroke-linecap="round"/><path d="M54 10 C62 2 74 4 76 8 C68 14 60 14 54 10 Z" fill="#6CC24A" stroke="#2E2350" stroke-width="4" stroke-linejoin="round"/><ellipse cx="36" cy="70" rx="5" ry="9" fill="#FFFFFF" opacity=".5"/>'],
     corazon: ['corazón', 'corazones', '<path d="M50 88 C20 66 8 50 8 34 C8 20 19 10 32 10 C40 10 46 14 50 22 C54 14 60 10 68 10 C81 10 92 20 92 34 C92 50 80 66 50 88 Z" fill="#FF6FA8" stroke="#2E2350" stroke-width="6" stroke-linejoin="round"/><ellipse cx="28" cy="30" rx="6" ry="9" fill="#FFFFFF" opacity=".5"/>'],
-    triangulo: ['triángulo', 'triángulos', '<path d="M50 10 L92 88 L8 88 Z" fill="#5A9CF0" stroke="#2E2350" stroke-width="6" stroke-linejoin="round"/>']
+    triangulo: ['triángulo', 'triángulos', '<path d="M50 10 L92 88 L8 88 Z" fill="#5A9CF0" stroke="#2E2350" stroke-width="6" stroke-linejoin="round"/>'],
+    carro: ['carro', 'carros', '<path d="M10 66 L10 52 C10 46 14 44 20 44 L28 44 L38 28 C40 25 43 24 46 24 L66 24 C70 24 72 26 74 29 L82 44 L86 44 C90 44 92 48 92 52 L92 66 Z" fill="#FF8A3D" stroke="#2E2350" stroke-width="6" stroke-linejoin="round"/><path d="M42 42 L48 32 L58 32 L58 42 Z M64 42 L64 32 L70 32 L75 42 Z" fill="#BDE6FF" stroke="#2E2350" stroke-width="4" stroke-linejoin="round"/><circle cx="30" cy="68" r="11" fill="#5A5A6E" stroke="#2E2350" stroke-width="6"/><circle cx="74" cy="68" r="11" fill="#5A5A6E" stroke="#2E2350" stroke-width="6"/>'],
+    pino: ['pino', 'pinos', '<path d="M50 6 L74 40 L62 40 L82 66 L66 66 L88 88 L12 88 L34 66 L18 66 L38 40 L26 40 Z" fill="#3FB46B" stroke="#2E2350" stroke-width="6" stroke-linejoin="round"/><rect x="42" y="88" width="16" height="10" fill="#9A6332" stroke="#2E2350" stroke-width="5"/>'],
+    esfera: ['esfera', 'esferas', '<rect x="40" y="8" width="20" height="14" rx="3" fill="#FFD43B" stroke="#2E2350" stroke-width="5"/><circle cx="50" cy="58" r="36" fill="#E8414B" stroke="#2E2350" stroke-width="6"/><path d="M16 52 C34 62 66 62 84 52" fill="none" stroke="#FFD43B" stroke-width="6" stroke-linecap="round"/><ellipse cx="36" cy="42" rx="6" ry="9" fill="#FFFFFF" opacity=".55"/>'],
+    lupa: ['lupa', 'lupas', '<path d="M60 60 L88 88" stroke="#2E2350" stroke-width="16" stroke-linecap="round"/><path d="M60 60 L88 88" stroke="#9A6332" stroke-width="8" stroke-linecap="round"/><circle cx="40" cy="40" r="30" fill="#CDEBFF" stroke="#2E2350" stroke-width="7"/><path d="M26 30 C30 22 38 18 46 18" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>'],
+    lapiz: ['lápiz', 'lápices', '<g transform="rotate(-45 50 50)"><rect x="10" y="38" width="62" height="24" fill="#FFD43B" stroke="#2E2350" stroke-width="5" stroke-linejoin="round"/><rect x="2" y="38" width="12" height="24" rx="4" fill="#FF8FA3" stroke="#2E2350" stroke-width="5"/><path d="M72 38 L96 50 L72 62 Z" fill="#F3CFA0" stroke="#2E2350" stroke-width="5" stroke-linejoin="round"/><path d="M88 46 L96 50 L88 54 Z" fill="#2E2350"/></g>']
   };
   const nom = (n, f) => `${NUM[n]} ${n === 1 ? FIG[f][0] : FIG[f][1]}`;
   const NUM = ['cero', 'una', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez'];
