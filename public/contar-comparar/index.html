@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Contar y comparar</title>
-<meta name="description" content="Para proyectar en preescolar: contar del 1 al 10 con palmadas y saltos, y decir qué montón de cubos tiene más.">
+<meta name="description" content="Para proyectar en preescolar: contar del 1 al 10 con palmadas y saltos, y decir dónde hay más manzanas, peras, corazones o triángulos.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Preescolar">
 <meta property="og:locale" content="es_MX">
 <meta property="og:title" content="Contar y comparar">
-<meta property="og:description" content="Para proyectar en preescolar: contar del 1 al 10 con palmadas y saltos, y decir qué montón de cubos tiene más.">
+<meta property="og:description" content="Para proyectar en preescolar: contar del 1 al 10 con palmadas y saltos, y decir dónde hay más manzanas, peras, corazones o triángulos.">
 <meta property="og:url" content="https://preescolar.lucraft.com.mx/contar-comparar/">
 <meta property="og:image" content="https://preescolar.lucraft.com.mx/og.jpg">
 <meta property="og:image:width" content="1200">
@@ -60,13 +60,15 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .casilla.on .n, .casilla.on .pts, .casilla.dicho .n, .casilla.dicho .pts { opacity: 1; }
 .casilla.dicho { background: #FFF4B8; }
 .accion { font-size: clamp(30px, 6vh, 64px); min-height: 1.3em; text-align: center; }
-.montones { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(12px, 3vw, 40px); width: min(100%, 1100px); flex: 1; min-height: 0; max-height: 62vh; }
+.montones { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(12px, 3vw, 40px); width: min(100%, 1100px); flex: 1; min-height: 0; max-height: 62vh; }
 .monton { position: relative; border: 6px solid var(--borde); background: var(--tarjeta); border-radius: 36px; box-shadow: var(--sombra); display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: clamp(10px, 2vh, 22px); gap: 10px; min-height: 0; }
 .monton.bien { border-color: #2FB36B; background: #E6FAEE; }
 .monton.mal { animation: tiembla .4s ease; }
 @keyframes tiembla { 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
-.pila { --w: clamp(40px, min(6vw, 8.5vh), 80px); display: flex; flex-wrap: wrap-reverse; gap: 6px; justify-content: center; align-content: flex-start; width: calc(var(--w) * 3 + 12px); max-width: 100%; }
-.cubo { width: var(--w); aspect-ratio: 1; border-radius: 10px; background: var(--c); box-shadow: inset 0 -8px 0 rgba(0,0,0,.15); border: 4px solid #2E2350; position: relative; display: grid; place-items: center; color: #FFF; font-size: clamp(18px, 3vh, 32px); }
+.pila { --w: clamp(40px, min(7vw, 10.5vh), 100px); display: flex; flex-wrap: wrap-reverse; gap: 6px; justify-content: center; align-content: flex-start; width: calc(var(--w) * var(--cols, 3) + 6px * (var(--cols, 3) - 1)); max-width: 100%; }
+.cubo { width: var(--w); aspect-ratio: 1; position: relative; display: grid; place-items: center; }
+.cubo svg { width: 100%; height: 100%; display: block; }
+.cubo b { position: absolute; inset: 0; display: grid; place-items: center; padding-top: 14%; color: #FFF; font-size: clamp(18px, 3.2vh, 32px); -webkit-text-stroke: 1.5px #2E2350; paint-order: stroke fill; }
 .cubo.cnt { animation: salta .35s ease; }
 @keyframes salta { 40% { transform: translateY(-14px) scale(1.08); } }
 .total { font-size: clamp(30px, 6vh, 60px); min-height: 1.2em; }
@@ -94,7 +96,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .app { height: auto; }
   .serie { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .montones { max-height: none; }
-  .monton { min-height: 260px; }
+  .monton { min-height: 260px; padding: 10px 6px; }
+  .pila { --w: calc((44vw - 40px) / var(--cols, 3)); }
 }
 @media (prefers-reduced-motion: reduce) { .casilla, .cubo.cnt, .monton.mal { animation: none; transition: none; } }
 </style>
@@ -135,9 +138,17 @@ button { font: inherit; color: inherit; cursor: pointer; }
 <script>
 (() => {
   'use strict';
-  const RONDAS = [[3, 5], [6, 2], [4, 7], [8, 5], [5, 5]];
-  const COLS = ['#FF8FA3', '#FFB347', '#5DD39E', '#6EC6FF', '#C792EA'];
-  const NUM = ['cero', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez'];
+  const RONDAS = [[3, 'manzana', 5, 'pera'], [6, 'corazon', 2, 'triangulo'], [4, 'manzana', 7, 'manzana'], [8, 'pera', 5, 'corazon'], [2, 'triangulo', 6, 'triangulo'],
+    [7, 'corazon', 4, 'manzana'], [5, 'pera', 9, 'triangulo'], [1, 'manzana', 4, 'corazon'], [10, 'triangulo', 6, 'pera'], [3, 'corazon', 3, 'corazon'],
+    [9, 'manzana', 7, 'pera'], [4, 'triangulo', 8, 'corazon'], [6, 'pera', 5, 'manzana'], [2, 'corazon', 9, 'triangulo'], [5, 'manzana', 5, 'pera']];
+  const FIG = {
+    manzana: ['manzana', 'manzanas', '<path d="M50 30 C30 18 10 32 12 56 C14 80 32 94 50 86 C68 94 86 80 88 56 C90 32 70 18 50 30 Z" fill="#F0454B" stroke="#2E2350" stroke-width="6" stroke-linejoin="round"/><path d="M50 30 C50 22 52 14 58 8" fill="none" stroke="#2E2350" stroke-width="6" stroke-linecap="round"/><path d="M56 18 C66 6 82 8 84 14 C74 22 62 22 56 18 Z" fill="#6CC24A" stroke="#2E2350" stroke-width="4" stroke-linejoin="round"/><ellipse cx="32" cy="46" rx="6" ry="10" fill="#FFFFFF" opacity=".5"/>'],
+    pera: ['pera', 'peras', '<path d="M50 14 C40 14 38 26 38 36 C38 46 20 54 20 72 C20 88 34 96 50 96 C66 96 80 88 80 72 C80 54 62 46 62 36 C62 26 60 14 50 14 Z" fill="#B7DB4B" stroke="#2E2350" stroke-width="6" stroke-linejoin="round"/><path d="M50 14 C50 10 52 6 56 4" fill="none" stroke="#2E2350" stroke-width="5" stroke-linecap="round"/><path d="M54 10 C62 2 74 4 76 8 C68 14 60 14 54 10 Z" fill="#6CC24A" stroke="#2E2350" stroke-width="4" stroke-linejoin="round"/><ellipse cx="36" cy="70" rx="5" ry="9" fill="#FFFFFF" opacity=".5"/>'],
+    corazon: ['corazón', 'corazones', '<path d="M50 88 C20 66 8 50 8 34 C8 20 19 10 32 10 C40 10 46 14 50 22 C54 14 60 10 68 10 C81 10 92 20 92 34 C92 50 80 66 50 88 Z" fill="#FF6FA8" stroke="#2E2350" stroke-width="6" stroke-linejoin="round"/><ellipse cx="28" cy="30" rx="6" ry="9" fill="#FFFFFF" opacity=".5"/>'],
+    triangulo: ['triángulo', 'triángulos', '<path d="M50 10 L92 88 L8 88 Z" fill="#5A9CF0" stroke="#2E2350" stroke-width="6" stroke-linejoin="round"/>']
+  };
+  const nom = (n, f) => `${NUM[n]} ${n === 1 ? FIG[f][0] : FIG[f][1]}`;
+  const NUM = ['cero', 'una', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez'];
   const $ = (s) => document.querySelector(s);
   let paso = 0, modo = 0, contando = false, elegido = false, timers = [];
   const PASOS = 1 + RONDAS.length;
@@ -182,12 +193,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
       <div class="accion" id="accion" aria-live="polite"></div>`;
   }
   function pintarRonda() {
-    const [a, b] = RONDAS[paso - 1], reto = paso === PASOS - 1;
-    const pila = (n, c) => Array.from({ length: n }, () => `<span class="cubo" style="--c:${c}"></span>`).join('');
-    $('#escena').innerHTML = `<p class="consigna">¿<span class="q">Q</span>ué montón tiene más cubos?</p>
+    const [a, fa, b, fb] = RONDAS[paso - 1], reto = paso === PASOS - 1;
+    const pila = (n, f) => `<span class="pila" style="--cols:${n > 6 ? 4 : 3}">` + Array.from({ length: n }, () => `<span class="cubo"><svg viewBox="0 0 100 100" aria-hidden="true">${FIG[f][2]}</svg><b></b></span>`).join('') + '</span>';
+    $('#escena').innerHTML = `<p class="consigna">¿<span class="q">D</span>ónde hay más?</p>
       <div class="montones">
-        <button class="monton" type="button" data-l="0" aria-label="Montón de la izquierda">${reto ? '<span class="etq-reto">Reto</span>' : ''}<span class="pila">${pila(a, COLS[paso % 5])}</span><span class="total"></span></button>
-        <button class="monton" type="button" data-l="1" aria-label="Montón de la derecha"><span class="pila">${pila(b, COLS[(paso + 2) % 5])}</span><span class="total"></span></button>
+        <button class="monton" type="button" data-l="0" aria-label="Montón de la izquierda">${reto ? '<span class="etq-reto">Reto</span>' : ''}${pila(a, fa)}<span class="total"></span></button>
+        <button class="monton" type="button" data-l="1" aria-label="Montón de la derecha">${pila(b, fb)}<span class="total"></span></button>
       </div>
       <div class="resultado" id="resultado" aria-live="polite"></div>`;
   }
@@ -214,29 +225,29 @@ button { font: inherit; color: inherit; cursor: pointer; }
   function contarRonda(despues) {
     if (contando) return; limpiar(); contando = true; audio();
     const ms = [...document.querySelectorAll('.monton')]; let t = 300;
-    ms.forEach((m) => { m.querySelector('.total').textContent = ''; m.querySelectorAll('.cubo').forEach((c) => { c.textContent = ''; c.classList.remove('cnt'); }); });
+    ms.forEach((m) => { m.querySelector('.total').textContent = ''; m.querySelectorAll('.cubo').forEach((c) => { c.querySelector('b').textContent = ''; c.classList.remove('cnt'); }); });
     ms.forEach((m, lado) => {
       const cs = [...m.querySelectorAll('.cubo')];
-      cs.forEach((c, n) => { timers.push(setTimeout(() => { c.textContent = n + 1; c.classList.add('cnt'); tono(440 + n * 60, 520 + n * 60, 0, 0.15, 0.2); decir(String(n + 1)); }, t)); t += 850; });
+      cs.forEach((c, n) => { timers.push(setTimeout(() => { c.querySelector('b').textContent = n + 1; c.classList.add('cnt'); tono(440 + n * 60, 520 + n * 60, 0, 0.15, 0.2); decir(String(n + 1)); }, t)); t += 850; });
       timers.push(setTimeout(() => { m.querySelector('.total').textContent = cs.length; }, t)); t += 700;
     });
     timers.push(setTimeout(() => { contando = false; despues && despues(); }, t));
   }
   function explicar() {
-    const [a, b] = RONDAS[paso - 1];
-    const txt = a === b ? `Los dos tienen ${NUM[a]}: ¡son iguales!` : `${Math.max(a, b)} es más que ${Math.min(a, b)}`;
+    const [a, fa, b, fb] = RONDAS[paso - 1];
+    const txt = a === b ? `Hay ${nom(a, fa)} y ${nom(b, fb)}: ¡son iguales!` : (a > b ? `${nom(a, fa)} son más que ${nom(b, fb)}` : `${nom(b, fb)} son más que ${nom(a, fa)}`);
     $('#resultado').textContent = txt; decir(txt);
   }
   function elegir(lado, el) {
     if (contando || paso === 0) return; audio();
-    const [a, b] = RONDAS[paso - 1], ms = [...document.querySelectorAll('.monton')];
-    if (a === b) { ms.forEach((m) => m.classList.add('bien')); tono(520, 780, 0, 0.3, 0.25); decir('¡Tienen los mismos! Vamos a contar.'); elegido = true; return; }
+    const [a, , b] = RONDAS[paso - 1], ms = [...document.querySelectorAll('.monton')];
+    if (a === b) { ms.forEach((m) => m.classList.add('bien')); tono(520, 780, 0, 0.3, 0.25); decir('¡Hay los mismos! Vamos a contar.'); elegido = true; return; }
     const gana = a > b ? 0 : 1;
-    if (lado === gana) { el.classList.add('bien'); tono(660, 990, 0, 0.35, 0.25); decir('¡Sí! Ese tiene más. Vamos a contar.'); elegido = true; }
+    if (lado === gana) { el.classList.add('bien'); tono(660, 990, 0, 0.35, 0.25); decir('¡Sí! Ahí hay más. Vamos a contar.'); elegido = true; }
     else { el.classList.remove('mal'); void el.offsetWidth; el.classList.add('mal'); tono(300, 220, 0, 0.25, 0.2); decir('Mmm, mira otra vez.'); }
   }
   function ir(n) { paso = Math.max(0, Math.min(PASOS, n)); parar(); pintar();
-    if (paso > 0 && paso < PASOS) decir('¿Qué montón tiene más cubos?'); }
+    if (paso > 0 && paso < PASOS) decir('¿Dónde hay más?'); }
   let tReloj = 0;
   function parar() { clearInterval(tReloj); $('#reloj').textContent = ''; $('#btnMinuto').textContent = '1 minuto'; }
   $('#btnMinuto').addEventListener('click', () => {
