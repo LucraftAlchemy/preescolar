@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contar y comparar</title>
+<meta name="description" content="Para proyectar en preescolar: contar del 1 al 10 con palmadas y saltos, y decir qué montón de cubos tiene más.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Preescolar">
+<meta property="og:locale" content="es_MX">
+<meta property="og:title" content="Contar y comparar">
+<meta property="og:description" content="Para proyectar en preescolar: contar del 1 al 10 con palmadas y saltos, y decir qué montón de cubos tiene más.">
+<meta property="og:url" content="https://preescolar.lucraft.com.mx/contar-comparar/">
+<meta property="og:image" content="https://preescolar.lucraft.com.mx/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#FFF8E1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='6' width='52' height='52' rx='14' fill='%235A9CF0'/%3E%3Ctext x='32' y='45' font-size='36' text-anchor='middle' font-family='sans-serif' font-weight='700' fill='%23FFFFFF'%3E5%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mali:wght@600;700&display=swap">
+<style>
+
+:root {
+  --bg: #FFF8E1; --tarjeta: #FFFFFF; --tinta: #2E2350; --borde: #FFD54A; --borde-osc: #C98A00; --rojo: #E1262D;
+  --lila-osc: #6B45C6; --sombra: 0 6px 0 #F3DC8E;
+  --f: "Mali", "Comic Sans MS", "Chalkboard SE", system-ui, sans-serif; color-scheme: light;
+}
+html, body { height: 100%; margin: 0; }
+[hidden] { display: none !important; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--tinta); font-family: var(--f); font-weight: 700; overflow-x: hidden; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 4px solid var(--lila-osc); outline-offset: 4px; }
+.app { min-height: 100%; height: 100%; display: flex; flex-direction: column; gap: clamp(8px, 1.6vh, 18px);
+  padding-block: clamp(10px, 2vh, 22px); padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px)); }
+.cab { display: flex; align-items: center; justify-content: space-between; gap: 10px 16px; flex-wrap: wrap; }
+.cab h1 { margin: 0; font-size: clamp(26px, 4.2vh, 46px); line-height: 1.05; background: var(--tarjeta); border: 4px solid var(--borde); border-radius: 999px; padding: 6px 26px 10px; box-shadow: var(--sombra); }
+.q { color: var(--rojo); }
+.puntos { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.punto { width: 18px; height: 18px; border-radius: 50%; background: var(--tarjeta); border: 3px solid var(--borde); }
+.punto.hecho { background: var(--borde); }
+.punto.actual { background: #FF8FA3; border-color: #E0526E; transform: scale(1.25); }
+.punto.reto { border-radius: 4px; }
+.punto.estrella { border-radius: 4px; transform: rotate(45deg); }
+.iconos { display: flex; gap: 10px; }
+.icono { width: 52px; height: 52px; border-radius: 16px; border: 4px solid var(--borde); background: var(--tarjeta); display: grid; place-items: center; box-shadow: var(--sombra); color: inherit; text-decoration: none; }
+.icono svg { width: 24px; height: 24px; }
+
+
+.escena { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(8px, 2vh, 20px); }
+.consigna { margin: 0; font-size: clamp(24px, 4.6vh, 48px); text-align: center; line-height: 1.15; }
+.serie { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: clamp(6px, 1vw, 14px); width: min(100%, 1200px); }
+.casilla { aspect-ratio: 3 / 4; background: var(--tarjeta); border: 5px solid var(--borde); border-radius: 22px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 8px 4px; box-shadow: var(--sombra); transition: transform .2s ease, background .2s ease; }
+.casilla .n { font-size: clamp(30px, min(5.5vw, 9vh), 84px); line-height: 1; opacity: .18; }
+.casilla .pts { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; width: 100%; opacity: .18; }
+.casilla .pts i { width: clamp(7px, 1vw, 13px); aspect-ratio: 1; border-radius: 50%; background: var(--tinta); display: block; }
+.casilla.on { background: #FFE14D; transform: translateY(-10px) scale(1.06); }
+.casilla.on .n, .casilla.on .pts, .casilla.dicho .n, .casilla.dicho .pts { opacity: 1; }
+.casilla.dicho { background: #FFF4B8; }
+.accion { font-size: clamp(30px, 6vh, 64px); min-height: 1.3em; text-align: center; }
+.montones { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(12px, 3vw, 40px); width: min(100%, 1100px); flex: 1; min-height: 0; max-height: 62vh; }
+.monton { position: relative; border: 6px solid var(--borde); background: var(--tarjeta); border-radius: 36px; box-shadow: var(--sombra); display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: clamp(10px, 2vh, 22px); gap: 10px; min-height: 0; }
+.monton.bien { border-color: #2FB36B; background: #E6FAEE; }
+.monton.mal { animation: tiembla .4s ease; }
+@keyframes tiembla { 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+.pila { --w: clamp(40px, min(6vw, 8.5vh), 80px); display: flex; flex-wrap: wrap-reverse; gap: 6px; justify-content: center; align-content: flex-start; width: calc(var(--w) * 3 + 12px); max-width: 100%; }
+.cubo { width: var(--w); aspect-ratio: 1; border-radius: 10px; background: var(--c); box-shadow: inset 0 -8px 0 rgba(0,0,0,.15); border: 4px solid #2E2350; position: relative; display: grid; place-items: center; color: #FFF; font-size: clamp(18px, 3vh, 32px); }
+.cubo.cnt { animation: salta .35s ease; }
+@keyframes salta { 40% { transform: translateY(-14px) scale(1.08); } }
+.total { font-size: clamp(30px, 6vh, 60px); min-height: 1.2em; }
+.etq-reto { position: absolute; top: 12px; left: 16px; font-size: clamp(14px, 2vh, 18px); background: #FFE0E6; color: #B3261E; border-radius: 999px; padding: 2px 12px; }
+.resultado { font-size: clamp(24px, 4.4vh, 44px); min-height: 1.3em; text-align: center; }
+.pie { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.btn { border: 0; border-radius: 26px; padding: 12px 26px 16px; font-size: clamp(20px, 3.4vh, 34px); box-shadow: 0 6px 0 rgba(0, 0, 0, .18); display: inline-flex; align-items: center; gap: 10px; }
+.btn:active { transform: translateY(3px); box-shadow: 0 3px 0 rgba(0, 0, 0, .18); }
+.btn svg { width: 1em; height: 1em; }
+.btn.amarillo { background: #FFD54A; }
+.btn.rosa { background: #FF8FA3; }
+.btn.verde { background: #8EE3B0; }
+.btn.sig { background: var(--lila-osc); color: #FFF; }
+.btn.chico { background: var(--tarjeta); border: 4px solid var(--borde); box-shadow: var(--sombra); font-size: clamp(16px, 2.4vh, 22px); padding: 10px 18px 12px; }
+
+.final { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(8px, 2vh, 20px); text-align: center; }
+.final .todas { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.final .todas svg { width: clamp(70px, 12vh, 120px); height: auto; background: #FFF; border-radius: 20px; border: 4px solid var(--borde); }
+.final h2 { margin: 0; font-size: clamp(30px, 6vh, 60px); line-height: 1.1; }
+.reloj { font-size: clamp(30px, 6vh, 60px); font-variant-numeric: tabular-nums; min-width: 4ch; }
+.fila { display: flex; gap: 14px; align-items: center; justify-content: center; flex-wrap: wrap; }
+
+
+@media (max-width: 700px) {
+  .app { height: auto; }
+  .serie { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .montones { max-height: none; }
+  .monton { min-height: 260px; }
+}
+@media (prefers-reduced-motion: reduce) { .casilla, .cubo.cnt, .monton.mal { animation: none; transition: none; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="cab">
+    <h1><span class="q">C</span>ontar y comparar</h1>
+    <div class="puntos" id="puntos" aria-label="Avance"></div>
+    <div class="iconos">
+      <a class="icono" href="../" aria-label="Todas las actividades" title="Todas las actividades">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg>
+      </a>
+      <button class="icono" id="btnPantalla" type="button" aria-label="Pantalla completa" title="Pantalla completa">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="escena" id="escena"></main>
+
+  <section class="final" id="final" hidden>
+    <h2>¡<span class="q">M</span>uy bien! Ahora dos niños<br>explican su objeto.</h2>
+    <div class="fila">
+      <button class="btn amarillo" id="btnMinuto" type="button">1 minuto</button>
+      <div class="reloj" id="reloj" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <footer class="pie" id="pie">
+    <button class="btn chico" id="btnAtras" type="button">Anterior</button>
+    <button class="btn rosa" id="btnModo" type="button">Con palmadas</button>
+    <button class="btn verde" id="btnContar" type="button">Contar</button>
+    <button class="btn sig" id="btnSig" type="button">Siguiente</button>
+  </footer>
+</div>
+
+<script>
+(() => {
+  'use strict';
+  const RONDAS = [[3, 5], [6, 2], [4, 7], [8, 5], [5, 5]];
+  const COLS = ['#FF8FA3', '#FFB347', '#5DD39E', '#6EC6FF', '#C792EA'];
+  const NUM = ['cero', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez'];
+  const $ = (s) => document.querySelector(s);
+  let paso = 0, modo = 0, contando = false, elegido = false, timers = [];
+  const PASOS = 1 + RONDAS.length;
+  let ac = null;
+  const audio = () => { try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === 'suspended') ac.resume(); return ac; } catch (e) { return null; } };
+  function tono(f1, f2, ini, dur, vol, tipo) {
+    const a = audio(); if (!a) return;
+    const t = a.currentTime + ini, o = a.createOscillator(), g = a.createGain();
+    o.type = tipo || 'sine'; o.frequency.setValueAtTime(f1, t); o.frequency.exponentialRampToValueAtTime(f2, t + dur);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g).connect(a.destination); o.start(t); o.stop(t + dur + 0.05);
+  }
+  let voces = [];
+  function vozFemenina(vs) {
+    const es = (vs || []).filter((x) => /^es/i.test(x.lang));
+    const fem = /paulina|ang[eé]lica|marisol|m[oó]nica|soledad|isabela|esperanza|sabina|dalia|helena|laura|elvira|paloma|valentina|ximena|renata|lupe|female|mujer|google español/i;
+    const masc = /juan|jorge|diego|carlos|ra[uú]l|pablo|[aá]lvaro|enrique|male\b|hombre/i;
+    const mx = (x) => /es[-_](MX|419)/i.test(x.lang), us = (x) => /es[-_]US/i.test(x.lang);
+    return es.find((x) => mx(x) && fem.test(x.name)) || es.find((x) => us(x) && fem.test(x.name)) || es.find((x) => fem.test(x.name))
+      || es.find((x) => mx(x) && !masc.test(x.name)) || es.find((x) => !masc.test(x.name)) || es[0] || null;
+  }
+  const cargarVoces = () => { try { voces = window.speechSynthesis ? window.speechSynthesis.getVoices() : []; } catch (e) { voces = []; } };
+  cargarVoces(); try { window.speechSynthesis && window.speechSynthesis.addEventListener('voiceschanged', cargarVoces); } catch (e) {}
+  function decir(t, cancelar = true) {
+    try {
+      const s = window.speechSynthesis; if (!s) return;
+      if (cancelar) s.cancel();
+      const u = new SpeechSynthesisUtterance(t); u.lang = 'es-MX'; u.rate = 0.8; u.pitch = 1.2;
+      const v = vozFemenina(voces); if (v) u.voice = v; s.speak(u);
+    } catch (e) {}
+  }
+
+  const limpiar = () => { timers.forEach(clearTimeout); timers = []; contando = false; };
+  function puntos() {
+    $('#puntos').innerHTML = Array.from({ length: PASOS }, (_, k) => `<span class="punto${k === PASOS - 1 ? ' reto' : ''}${k < paso ? ' hecho' : ''}${k === paso ? ' actual' : ''}"></span>`).join('')
+      + `<span class="punto estrella${paso >= PASOS ? ' actual' : ''}"></span>`;
+  }
+  const MODOS = [['Con palmadas', '👏 ¡Palmada!', 'palmadas'], ['Con saltos', '🦘 ¡Salto!', 'saltos']];
+  function pintarSerie() {
+    $('#escena').innerHTML = `<p class="consigna"><span class="q">D</span>ecimos los números del 1 al 10 ${MODOS[modo][2] === 'palmadas' ? 'con palmadas' : 'con saltos'}</p>
+      <div class="serie">${Array.from({ length: 10 }, (_, k) => `<div class="casilla" id="c${k + 1}"><span class="n">${k + 1}</span><span class="pts">${'<i></i>'.repeat(k + 1)}</span></div>`).join('')}</div>
+      <div class="accion" id="accion" aria-live="polite"></div>`;
+  }
+  function pintarRonda() {
+    const [a, b] = RONDAS[paso - 1], reto = paso === PASOS - 1;
+    const pila = (n, c) => Array.from({ length: n }, () => `<span class="cubo" style="--c:${c}"></span>`).join('');
+    $('#escena').innerHTML = `<p class="consigna">¿<span class="q">Q</span>ué montón tiene más cubos?</p>
+      <div class="montones">
+        <button class="monton" type="button" data-l="0" aria-label="Montón de la izquierda">${reto ? '<span class="etq-reto">Reto</span>' : ''}<span class="pila">${pila(a, COLS[paso % 5])}</span><span class="total"></span></button>
+        <button class="monton" type="button" data-l="1" aria-label="Montón de la derecha"><span class="pila">${pila(b, COLS[(paso + 2) % 5])}</span><span class="total"></span></button>
+      </div>
+      <div class="resultado" id="resultado" aria-live="polite"></div>`;
+  }
+  function pintar() {
+    puntos(); limpiar(); elegido = false;
+    const fin = paso >= PASOS;
+    $('#escena').hidden = fin; $('#final').hidden = !fin;
+    $('#btnModo').hidden = fin || paso !== 0; $('#btnContar').hidden = fin; $('#btnSig').hidden = fin;
+    $('#btnAtras').hidden = paso === 0; $('#btnAtras').textContent = fin ? 'Volver' : 'Anterior';
+    $('#btnModo').textContent = MODOS[1 - modo][0];
+    if (fin) return;
+    if (paso === 0) pintarSerie(); else pintarRonda();
+  }
+  function contarSerie() {
+    if (contando) return; limpiar(); contando = true; audio();
+    document.querySelectorAll('.casilla').forEach((c) => c.classList.remove('on', 'dicho'));
+    for (let k = 1; k <= 10; k++) timers.push(setTimeout(() => {
+      document.querySelectorAll('.casilla.on').forEach((c) => { c.classList.remove('on'); c.classList.add('dicho'); });
+      $('#c' + k).classList.add('on'); $('#accion').textContent = MODOS[modo][1];
+      tono(modo ? 300 : 900, modo ? 600 : 500, 0, 0.18, 0.25, modo ? 'sine' : 'triangle'); decir(String(k));
+    }, 300 + (k - 1) * 1400));
+    timers.push(setTimeout(() => { $('#accion').textContent = '¡Llegamos al 10!'; tono(660, 990, 0, 0.35, 0.25); decir('¡Llegamos al diez!'); contando = false; }, 300 + 10 * 1400));
+  }
+  function contarRonda(despues) {
+    if (contando) return; limpiar(); contando = true; audio();
+    const ms = [...document.querySelectorAll('.monton')]; let t = 300;
+    ms.forEach((m) => { m.querySelector('.total').textContent = ''; m.querySelectorAll('.cubo').forEach((c) => { c.textContent = ''; c.classList.remove('cnt'); }); });
+    ms.forEach((m, lado) => {
+      const cs = [...m.querySelectorAll('.cubo')];
+      cs.forEach((c, n) => { timers.push(setTimeout(() => { c.textContent = n + 1; c.classList.add('cnt'); tono(440 + n * 60, 520 + n * 60, 0, 0.15, 0.2); decir(String(n + 1)); }, t)); t += 850; });
+      timers.push(setTimeout(() => { m.querySelector('.total').textContent = cs.length; }, t)); t += 700;
+    });
+    timers.push(setTimeout(() => { contando = false; despues && despues(); }, t));
+  }
+  function explicar() {
+    const [a, b] = RONDAS[paso - 1];
+    const txt = a === b ? `Los dos tienen ${NUM[a]}: ¡son iguales!` : `${Math.max(a, b)} es más que ${Math.min(a, b)}`;
+    $('#resultado').textContent = txt; decir(txt);
+  }
+  function elegir(lado, el) {
+    if (contando || paso === 0) return; audio();
+    const [a, b] = RONDAS[paso - 1], ms = [...document.querySelectorAll('.monton')];
+    if (a === b) { ms.forEach((m) => m.classList.add('bien')); tono(520, 780, 0, 0.3, 0.25); decir('¡Tienen los mismos! Vamos a contar.'); elegido = true; return; }
+    const gana = a > b ? 0 : 1;
+    if (lado === gana) { el.classList.add('bien'); tono(660, 990, 0, 0.35, 0.25); decir('¡Sí! Ese tiene más. Vamos a contar.'); elegido = true; }
+    else { el.classList.remove('mal'); void el.offsetWidth; el.classList.add('mal'); tono(300, 220, 0, 0.25, 0.2); decir('Mmm, mira otra vez.'); }
+  }
+  function ir(n) { paso = Math.max(0, Math.min(PASOS, n)); parar(); pintar();
+    if (paso > 0 && paso < PASOS) decir('¿Qué montón tiene más cubos?'); }
+  let tReloj = 0;
+  function parar() { clearInterval(tReloj); $('#reloj').textContent = ''; $('#btnMinuto').textContent = '1 minuto'; }
+  $('#btnMinuto').addEventListener('click', () => {
+    audio(); clearInterval(tReloj); let s = 60; $('#reloj').textContent = '1:00'; $('#btnMinuto').textContent = 'Otra vez';
+    tReloj = setInterval(() => { s--; $('#reloj').textContent = `0:${String(s).padStart(2, '0')}`; if (s <= 0) { clearInterval(tReloj); $('#reloj').textContent = '¡Listo!'; tono(660, 880, 0, 0.4, 0.25); } }, 1000);
+  });
+  $('#escena').addEventListener('click', (e) => { const m = e.target.closest('.monton'); if (m) elegir(Number(m.dataset.l), m); });
+  $('#btnContar').addEventListener('click', () => { if (paso === 0) contarSerie(); else contarRonda(explicar); });
+  $('#btnModo').addEventListener('click', () => { modo = 1 - modo; pintar(); });
+  $('#btnSig').addEventListener('click', () => ir(paso + 1));
+  $('#btnAtras').addEventListener('click', () => ir(paso - 1));
+  document.addEventListener('keydown', (e) => {
+    if ((e.key === ' ' || e.key === 'Enter') && e.target && e.target.closest && e.target.closest('button')) return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); ir(paso + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') ir(paso - 1);
+  });
+  $('#btnPantalla').addEventListener('click', () => {
+    try {
+      if (document.fullscreenElement) { document.exitFullscreen && document.exitFullscreen().catch(() => {}); }
+      else if (document.documentElement.requestFullscreen) { document.documentElement.requestFullscreen().catch(() => {}); }
+    } catch (e) {}
+  });
+  pintar();
+})();
+</script>
+</body>
+</html>
